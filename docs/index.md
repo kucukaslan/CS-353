@@ -13,7 +13,11 @@ For the tours and hotel reservation, tours can be uniquely identified by the tou
 The final segment is about commenting, a customer can comment on their experience during the tour, likewise, a tour guide can comment on a tour after it has been concluded.
 
 ## People
-* Ahmet Salman, 21901004, CS
-* Güven Gergerli, 21803393, CS
-* Muhammed Can Küçükaslan, 21901779, CS
-* Mustafa Yasir Altunhan, 21802530, CS
+* Ahmet Salman
+* Güven Gergerli
+* Muhammed Can Küçükaslan
+* Mustafa Yasir Altunhan
+
+## Reports
+| [Proposal](./documents/proposal.pdf) | [Revised Proposal](./documents/proposal_revised.pdf) | [Final Report](./documents/final.pdf) |
+| :---:         |     :---:      |          :---: |
