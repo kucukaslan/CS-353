@@ -1,4 +1,22 @@
 <?php
+include("../config.php");
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $surname = $_POST['surname'];
+    $birthDate = $_POST['date'];
+    $email = $_POST['email'];
+    $pass = $_POST['password'];
+
+    $passwordHash = hash('sha256', $pass);
+
+    $sql = "INSERT INTO employee (name, lastname, email, password_hash, birthday, salary, position) VALUES ('$name', '$surname', '$email', '$passwordHash', '$birthDate', null, null)";
+    if (!mysqli_query($db, $sql)) {
+        echo '<script>alert("An Error Occured, Account already exists"); </script>';
+    } else {
+        header("location: ../Login/loginE.php");
+    }
+}
 ?>
 
 <html>
@@ -7,7 +25,7 @@
     <link rel="stylesheet" href="../Styles/loginStyles.php" media="screen">
 </head>
 
-<form name="loginform" action="" method="post">
+<form name="registerformE" action="" method="post">
     <h1 class="a11y-hidden">Sign up Form</h1>
     <h2>Employee Sign Up</h2>
     <div>
@@ -23,24 +41,25 @@
         </label>
     </div>
     <div>
-        <label class="label-phone">
-            <input type="tel" id="phone" class="text" name="phone" placeholder="Phone Number" tabindex="2" required />
-            <span class="required">Phone Number</span>
-        </label>
-    </div>
-    <div>
         <label class="label-email">
-            <input type="email" id="userEmail" class="text" name="email" placeholder="Email" tabindex="1" required />
+            <input type="email" id="userEmail" class="text" name="email" placeholder="Email" tabindex="2" required />
             <span class="required">Email</span>
         </label>
     </div>
     <div>
         <label class="label-password">
-            <input type="text" id="userPass" class="text" name="password" placeholder="Password" tabindex="2"
-                required />
+            <input type="password" id="userPass" class="text" name="password" placeholder="Password" tabindex="2" required />
             <span class="required">Password</span>
         </label>
     </div>
+    <div>
+        <label class="label-date">
+            <input type="date" id="date" class="text" name="date" placeholder="Birthday" tabindex="2" required />
+            <span class="required">Birthday</span>
+        </label>
+    </div>
+
+
     <input type="submit" value="Sign up" />
     <div class="email">
         <a href="../login/loginC.php">Already registered? Sign in</a>
