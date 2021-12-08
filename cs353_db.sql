@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 07, 2021 at 12:02 PM
+-- Generation Time: Dec 08, 2021 at 12:25 PM
 -- Server version: 5.5.68-MariaDB
 -- PHP Version: 5.6.40
 
@@ -103,6 +103,13 @@ CREATE TABLE `employee` (
   `salary` int(11) DEFAULT NULL,
   `position` varchar(255) COLLATE utf16_turkish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`e_id`, `name`, `lastname`, `email`, `password_hash`, `birthday`, `salary`, `position`) VALUES
+(6, 'Ahmad', 'sdfghj', 'extremegames6109@gmail.com', '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5', '2021-12-29', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -263,8 +270,8 @@ CREATE TABLE `tour_guide` (
   `lastname` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `email` varchar(190) COLLATE utf16_turkish_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
-  `registration` date NOT NULL,
-  `profile_picture` blob NOT NULL
+  `registration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `profile_picture` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 -- --------------------------------------------------------
@@ -449,7 +456,7 @@ ALTER TABLE `customer_review`
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `flight`
@@ -485,13 +492,13 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `thecustomer`
 --
 ALTER TABLE `thecustomer`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tour_guide`
 --
 ALTER TABLE `tour_guide`
-  MODIFY `tg_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tour_guide_review`
