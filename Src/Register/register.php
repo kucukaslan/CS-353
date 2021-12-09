@@ -7,14 +7,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $birthDate = $_POST['date'];
     $email = $_POST['email'];
     $pass = $_POST['password'];
+    $userType = $_POST['users'];
 
     $passwordHash = hash('sha256', $pass);
 
-    $sql = "INSERT INTO thecustomer (name, lastname, email, password_hash, birthday, profile_picture) VALUES ('$name', '$surname', '$email', '$passwordHash', '$birthDate', null)";
+    if ($userType == 'thecustomer') 
+    {
+        $sql = "INSERT INTO $userType (name, lastname, email, password_hash, birthday, profile_picture) VALUES ('$name', '$surname', '$email', '$passwordHash', '$birthDate', null)";
+    } 
+    else if ($userType == 'employee') 
+    {
+        $sql = "INSERT INTO $userType (name, lastname, email, password_hash, birthday, salary, position) VALUES ('$name', '$surname', '$email', '$passwordHash', '$birthDate', null, null)";
+    } 
+    else if ($userType == 'tour_guide') 
+    {
+        $sql = "INSERT INTO $userType (name, lastname, email, password_hash, profile_picture) VALUES ('$name', '$surname', '$email', '$passwordHash', null)";
+    }
+
     if (!mysqli_query($db, $sql)) {
         echo '<script>alert("An Error Occured, Account already exists"); </script>';
     } else {
-        header("location: ../Login/loginC.php");
+        header("location: ../Login/login.php");
     }
 }
 ?>
@@ -25,9 +38,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../Styles/loginStyles.php" media="screen">
 </head>
 
-<form name="registerformC" action="" method="post">
-    <h1 class="a11y-hidden">Sign up Form</h1>
-    <h2>Customer Sign Up</h2>
+<form name="registerform" action="" method="post">
+    <h2>Sign Up Form</h2>
+
+    <label for="users">Sign Up As:</label>
+    <select name="users" id="users">
+        <option value="thecustomer">Customer</option>
+        <option value="employee">Employee</option>
+        <option value="tour_guide">Tour Guide</option>
+    </select>
+
     <div>
         <label class="label-name">
             <input type="text" id="name" class="text" name="name" placeholder="Name" tabindex="2" required />
@@ -61,27 +81,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <input type="submit" value="Sign up" />
     <div class="email">
-        <a href="../login/loginC.php">Already registered? Sign in</a>
-
+        <a href="../login/login.php">Already registered? Sign in</a>
     </div>
-    <div class="email">
-        <a href="../Register/registerE.php">Want to be an Employee? Sign up here</a>
-    </div>
-    <div class="email">
-        <a href="../Register/registerT.php">Want to be a Tour Guide? Sign up here</a>
-    </div>
-    <figure aria-hidden="true">
-        <div class="person-body"></div>
-        <div class="neck skin"></div>
-        <div class="head skin">
-            <div class="eyes"></div>
-            <div class="mouth"></div>
-        </div>
-        <div class="hair"></div>
-        <div class="ears"></div>
-        <div class="shirt-1"></div>
-        <div class="shirt-2"></div>
-    </figure>
 </form>
 
 </html>

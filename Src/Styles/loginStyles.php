@@ -17,7 +17,7 @@ html, body {
 
 form {
   --background: white;
-  --border: rgba(0, 0, 0, 0.125);
+  --border: rgba(0, 0, 0, 0.2);
   --borderDark: rgba(0, 0, 0, 0.25);
   --borderDarker: rgba(0, 0, 0, 0.5);
   --bgColorH: 0;
@@ -29,7 +29,7 @@ form {
   --shadeDark: 0.3;
   --shadeLight: 0.7;
   --shadeNormal: 0.5;
-  --borderRadius: 0.125rem;
+  --borderRadius: 0.50rem;
   --highlight: #306090;
   background: white;
   border: 1px solid var(--border);

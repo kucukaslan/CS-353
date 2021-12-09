@@ -1,0 +1,79 @@
+<?php
+include("../config.php");
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $email = $_POST['email'];
+    $pass = $_POST['password'];
+    $passwordHash = hash('sha256', $pass);
+    $userType = $_POST['users'];
+
+    $sql = "SELECT * FROM $userType WHERE email = '$email' AND password_hash = '$passwordHash' ";
+    $result = mysqli_query($db, $sql);
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+    if ($row === null) {
+        echo '<script>alert("This user does not exist, please check Email and Password"); </script>';
+    } else {
+        $count = mysqli_num_rows($result);
+
+        if ($count == 1) {
+
+            if ($userType == 'thecustomer') 
+            {
+                $_SESSION['id'] = $row['c_id'];
+                $_SESSION['type'] = "thecustomer";
+                header("location: ../Dashboard/dashboardC.php");
+            } else if ($userType == 'employee') 
+            {
+                $_SESSION['id'] = $row['e_id'];
+                $_SESSION['type'] = "employee";
+                header("location: ../Dashboard/dashboardE.php");
+            } else if ($userType == 'tour_guide') 
+            {
+                $_SESSION['id'] = $row['tg_id'];
+                $_SESSION['type'] = "tour_guide";
+                header("location: ../Dashboard/dashboardT.php");
+            }
+        }
+    }
+}
+?>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="../Styles/loginStyles.php" media="screen">
+</head>
+<form name="loginform" action="" method="post">
+    <h1 class="a11y-hidden">Login Form</h1>
+    <h2>Login Form</h2>
+
+    <label for="users">Login As:</label>
+    <select name="users" id="users">
+        <option value="thecustomer">Customer</option>
+        <option value="employee">Employee</option>
+        <option value="tour_guide">Tour Guide</option>
+    </select>
+
+    <div>
+        <label class="label-email">
+            <input type="email" id="userEmail" class="text" name="email" placeholder="Email" tabindex="1" required />
+            <span class="required">Email</span>
+        </label>
+    </div>
+    <div>
+        <label class="label-password">
+            <input type="password" id="userPass" class="text" name="password" placeholder="Password" tabindex="2"
+                required />
+            <span class="required">Password</span>
+        </label>
+    </div>
+    <input type="submit" value="Log In" />
+    <div class="email">
+        <a href="../Register/register.php">Not a user? Sign up</a>
+    </div>
+</form>
+
+</html>
