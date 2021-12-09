@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } 
     else if ($userType == 'tour_guide') 
     {
-        $sql = "INSERT INTO $userType (name, lastname, email, password_hash, profile_picture) VALUES ('$name', '$surname', '$email', '$passwordHash', null)";
+        $sql = "INSERT INTO $userType (name, lastname, email, password_hash, birthday, profile_picture) VALUES ('$name', '$surname', '$email', '$passwordHash', '$birthDate', null)";
     }
 
     if (!mysqli_query($db, $sql)) {
