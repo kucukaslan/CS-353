@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <input type="submit" value="Log In" />
     <div class="email">
-        <a href="../Register/register.php">Not a user? Sign up</a>
+        <a href="../register/">Not a user? Sign up</a>
     </div>
 </form>
 
