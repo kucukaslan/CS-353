@@ -19,5 +19,6 @@ The final segment is about commenting, a customer can comment on their experienc
 * Mustafa Yasir Altunhan
 
 ## Reports
-| [Proposal](./documents/proposal.pdf) | [Revised Proposal](./documents/proposal_revised.pdf) | [Final Report](./documents/final.pdf) |
+|  Proposal Report | Design Report  |Final Report |
 | :---:         |     :---:      |          :---: |
+|[.pdf](./documents/proposal.pdf)|[.pdf](./documents/design.pdf)|[.pdf](./documents/final.pdf) |
