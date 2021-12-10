@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!mysqli_query($db, $sql)) {
         echo '<script>alert("An Error Occured, Account already exists"); </script>';
     } else {
-        header("location: ../Login/login.php");
+        header("location: ../login/");
     }
 }
 ?>
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <input type="submit" value="Sign up" />
     <div class="email">
-        <a href="../login/login.php">Already registered? Sign in</a>
+        <a href="../login/">Already registered? Sign in</a>
     </div>
 </form>
 

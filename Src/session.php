@@ -3,6 +3,6 @@
    session_start();   
    
    if(!isset($_SESSION['id'])){
-      header("location: ../Login/login.php");
+      header("location: ../login");
    } 
 ?>
