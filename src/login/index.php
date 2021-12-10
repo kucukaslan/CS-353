@@ -24,17 +24,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 $_SESSION['id'] = $row['c_id'];
                 $_SESSION['type'] = "thecustomer";
-                header("location: ../Dashboard/dashboardC.php");
+                header("location: ../dashboard/dashboardC.php");
             } else if ($userType == 'employee') 
             {
                 $_SESSION['id'] = $row['e_id'];
                 $_SESSION['type'] = "employee";
-                header("location: ../Dashboard/dashboardE.php");
+                header("location: ../dashboard/dashboardE.php");
             } else if ($userType == 'tour_guide') 
             {
                 $_SESSION['id'] = $row['tg_id'];
                 $_SESSION['type'] = "tour_guide";
-                header("location: ../Dashboard/dashboardT.php");
+                header("location: ../dashboard/dashboardT.php");
             }
         }
     }
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 
 <head>
-    <link rel="stylesheet" href="../Styles/loginStyles.php" media="screen">
+    <link rel="stylesheet" href="../styles/loginstyles.php" media="screen">
 </head>
 <form name="loginform" action="" method="post">
     <h1 class="a11y-hidden">Login Form</h1>
