@@ -30,16 +30,12 @@ include("../session.php");
         <div class="collapse navbar-collapse" id="resNav">
             <ul class="nav navbar-nav navbar-right">
                 <div>
-
                     <form action="post">
-
-                        <input type="submit" name="button1" class="btn btn-primary" value="Button1" />
-
-                        <input type="submit" name="button2" class="btn btn-secondary" value="Button2" />
-
-                        <input type="submit" name="button3" class="btn btn-info" value="Button3" />
-
-                        <input type="submit" name="button2" class="btn btn-warning" value="Button4" />
+                        <input type="submit" name="flight" class="btn btn-primary" value="Reserve a Flight" />
+                        <input type="submit" name="pastTour" class="btn btn-secondary" value="Past Tours" />
+                        <input type="submit" name="bookTour" class="btn btn-info" value="Book a Tour" />
+                        <input type="submit" name="hotel" class="btn btn-warning" value="Reserve Hotel" />
+                        <input type="submit" name="profile" class="btn btn-warning" value="Profile" />
                     </form>
                     <form action="../logout.php">
                         <input type="submit" name="logout" class="btn btn-danger" value="Logout" />

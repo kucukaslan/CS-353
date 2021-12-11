@@ -19,12 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $count = mysqli_num_rows($result);
 
         if ($count == 1) {
-
             if ($userType == 'thecustomer') 
             {
                 $_SESSION['id'] = $row['c_id'];
                 $_SESSION['type'] = "thecustomer";
-                header("location: ../dashboard/dashboardC.php");
+                header("location: ../Customer/dashboardC.php");
             } else if ($userType == 'employee') 
             {
                 $_SESSION['id'] = $row['e_id'];
