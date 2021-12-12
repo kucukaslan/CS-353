@@ -2,6 +2,23 @@
 include("../config.php");
 session_start();
 
+if( isset($_SESSION['id'])){
+    if( strcmp("tour_guide", $_SESSION['type'] ?? "none") == 0) {
+        header("Location: ../guide");
+    }
+    else if( strcmp("employee", $_SESSION['type'] ?? "none") == 0) {
+        header("Location: ../employee");
+    }
+    // TODO IT is up to you, Ahmad and Guven, to update or not to update the redirection
+    /*
+    else if( strcmp("thecustomer", $_SESSION['type'] ?? "none") == 0) {
+        header("Location: ../customer/dashboardC");
+    }
+    */
+    // else continue (do nothing)
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $email = $_POST['email'];
