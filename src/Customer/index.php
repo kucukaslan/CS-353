@@ -2,40 +2,50 @@
 include("../session.php");
 $cid = $_SESSION['id'];
 
-$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname FROM tour_section, reservation, guides, tour, tour_guide WHERE tour.t_id = tour_section.t_id AND reservation.ts_id = tour_section.ts_id AND guides.tg_id = tour_guide.tg_id AND guides.ts_id = tour_section.ts_id AND reservation.status = 'approved' AND reservation.c_id = $cid ";
-$resultTour = $db -> query($sql);
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+FROM tour_section, reservation, guides, tour, tour_guide 
+WHERE tour.t_id = tour_section.t_id 
+AND reservation.ts_id = tour_section.ts_id 
+AND guides.tg_id = tour_guide.tg_id 
+AND guides.ts_id = tour_section.ts_id 
+AND reservation.status = 'approved' 
+AND reservation.c_id = $cid ";
 
-if(isset($_POST['ResDetails']))
-{
+$resultTour = $db->query($sql);
+
+if (isset($_POST['ResDetails'])) {
     $resId = $_POST['resId'];
     header("location: reservationDetails.php?resId=$resId");
 }
 
-if(isset($_POST['CancelRes']))
-{   
-    echo "<h1>Cancel Reservation</h1>";
-    echo $_POST['resId'];
+if (isset($_POST['CancelRes'])) 
+{
+    $res_id = $_POST['resId'];
+    $sql = "DELETE FROM reservation WHERE res_id = $res_id";
+    $db->query($sql);
+    header("Refresh:0");
 }
 
 $sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
 FROM booking, hotel, room
-WHERE booking.r_id= room.r_id AND
-room.h_id = hotel.h_id AND
-c_id = $cid AND
-status = 'accepted'";
+WHERE booking.r_id= room.r_id 
+AND room.h_id = hotel.h_id 
+AND c_id = $cid 
+AND status = 'accepted'";
 
-$resultHotel = $db -> query($sql);
+$resultHotel = $db->query($sql);
 
-if(isset($_POST['BookDetails']))
-{
+if (isset($_POST['BookDetails'])) {
     $bookId = $_POST['bookId'];
     header("location: bookingDetails.php?bookId=$bookId");
 }
 
-if(isset($_POST['CancelBook']))
-{   
-    echo "<h1>Cancel Booking</h1>";
-    echo $_POST['bookId'];
+if (isset($_POST['CancelBook'])) 
+{
+    $b_id = $_POST['bookId'];
+    $sql = "DELETE FROM booking WHERE b_id = $b_id";
+    $db->query($sql);
+    header("Refresh:0");
 }
 ?>
 
@@ -76,21 +86,18 @@ if(isset($_POST['CancelBook']))
         </thead>
         <tbody>
             <h3> Your Tour Reservations </h3>
-            <?php while($row = $resultTour->fetch_assoc()) : ?>
-            <tr id=<?php $row['res_id']?>>
-                <td> <?php echo $row['type'] ?> </td>
-                <td> <?php echo $row['start_date'] ?> </td>
-                <td> <?php echo $row['end_date'] ?> </td>
-                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
-                <td>
-                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
-                            name="ResDetails">Details</button> <button class="btn btn-warning" type="submit"
-                            name="CancelRes">Cancel
-                            Reservation</button> <input type="hidden" name="resId"
-                            value="<?php echo $row['res_id']; ?>"> </form>
-                </td>
+            <?php while ($row = $resultTour->fetch_assoc()) : ?>
+                <tr id=<?php $row['res_id'] ?>>
+                    <td> <?php echo $row['type'] ?> </td>
+                    <td> <?php echo $row['start_date'] ?> </td>
+                    <td> <?php echo $row['end_date'] ?> </td>
+                    <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                    <td>
+                        <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="ResDetails">Details</button> <button onclick="return  confirm('Are You Sure You Want To Delete This Reservation Y/N')" class="btn btn-warning" type="submit" name="CancelRes">Cancel
+                                Reservation</button> <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>"> </form>
+                    </td>
 
-            </tr>
+                </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
@@ -109,21 +116,19 @@ if(isset($_POST['CancelBook']))
         </thead>
         <tbody>
             <h3> Your Hotel Bookings </h3>
-            <?php while($row = $resultHotel->fetch_assoc()) : ?>
-            <tr id=<?php $row['b_id']?>>
-                <td> <?php echo $row['name'] ?> </td>
-                <td> <?php echo $row['type'] ?> </td>
-                <td> <?php echo $row['start_date'] ?> </td>
-                <td> <?php echo $row['end_date'] ?> </td>
-                <td>
-                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
-                            name="BookDetails">Details</button> <button class="btn btn-warning" type="submit"
-                            name="CancelBook">Cancel
-                            Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
-                    </form>
-                </td>
+            <?php while ($row = $resultHotel->fetch_assoc()) : ?>
+                <tr id=<?php $row['b_id'] ?>>
+                    <td> <?php echo $row['name'] ?> </td>
+                    <td> <?php echo $row['type'] ?> </td>
+                    <td> <?php echo $row['start_date'] ?> </td>
+                    <td> <?php echo $row['end_date'] ?> </td>
+                    <td>
+                        <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="BookDetails">Details</button> <button onclick="return  confirm('Are You Sure You Want To Delete This Booking Y/N')" class="btn btn-warning" type="submit" name="CancelBook">Cancel
+                                Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
+                        </form>
+                    </td>
 
-            </tr>
+                </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
