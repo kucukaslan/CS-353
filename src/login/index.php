@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 $_SESSION['id'] = $row['tg_id'];
                 $_SESSION['type'] = "tour_guide";
-                header("location: ../dashboard/dashboardT.php");
+                header("location: ../guide/");
             }
         }
     }

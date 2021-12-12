@@ -5,4 +5,8 @@
    define('DB_DATABASE', 'ahmad_salman');
 
    $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+   function getRootDirectory() : string {
+      return dirname(__FILE__);
+   }
 ?>
