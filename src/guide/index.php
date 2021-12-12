@@ -1,11 +1,6 @@
 <?php
-include("../config.php");
-session_start();
-
-if(!isset($_SESSION['id'])  ){
-    header("location: ".getRootDirectory()."/login");
-}
-else if(strcmp("tour_guide", $_SESSION['type'] ?? "none") != 0) {
+include("../session.php");
+if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
 
@@ -14,9 +9,6 @@ $sql = "SELECT tour.type, start_date, end_date
     WHERE  end_date < NOW() 
     AND guides.tour_guide_id = ${_SESSION['id']}
     AND tour.t_id = tour_section.ts_id";
-
-
-
 
 if($_SERVER['REQUEST_METHOD'] == "POST") {
 
@@ -74,6 +66,13 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
     </nav>
     <!-- End of Navbar -->
+    <!-- First four lines are invisible they're behind the navbar!-->
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <h2>Dashboard</h2>
 </body>
 
 </html>

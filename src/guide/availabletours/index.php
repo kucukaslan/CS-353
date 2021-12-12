@@ -1,11 +1,6 @@
 <?php
-include("../../config.php");
-session_start();
-
-if(!isset($_SESSION['id'])  ){
-    header("location: ".getRootDirectory()."/login");
-}
-else if(strcmp("tour_guide", $_SESSION['type'] ?? "none") != 0) {
+include("../../session.php");
+if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
 if($_SERVER['REQUEST_METHOD'] == "POST") {
