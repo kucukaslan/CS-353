@@ -8,11 +8,10 @@ if( strcmp("tour_guide", $_SESSION['type'] ?? "none") == 0) {
 else if( strcmp("employee", $_SESSION['type'] ?? "none") == 0) {
     header("Location: employee");
 }
-// TODO IT is up to you Ahmad and Guven
-/*
+
 else if( strcmp("thecustomer", $_SESSION['type'] ?? "none") == 0) {
-    header("Location: customer/dashboardC");
+    header("Location: customer");
 }
-*/
+
 else
     header("Location: login");

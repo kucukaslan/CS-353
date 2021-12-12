@@ -42,3 +42,8 @@ header("Content-type: text/css");
   background-color: dodgerblue;
   color: white;
 }
+
+hr.rounded {
+  border-top: 8px solid #bbb;
+  border-radius: 5px;
+}
