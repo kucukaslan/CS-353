@@ -64,11 +64,13 @@ if (isset($_POST['CancelBook']))
 </head>
 
 <body>
-    <div class="pill-nav">
-        <a href="../customer">Home</a>
-        <a href="CS-353/src/Customer/dashboardC.php">News</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About</a>
+    <div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">
+        <a class="nav-link active" href="../customer">Home</a>
+        <a href="reserveFlight.php">Reserve a Flight</a>
+        <a href="pastTours.php">Past Tours</a>
+        <a href="bookTour.php">Book a Tour</a>
+        <a href="reserveHotel.php">Reserve a Hotel</a>
+        <a href="profile.php">Profile</a>
         <form action="../logout.php">
             <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
         </form>
