@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 08, 2021 at 12:25 PM
+-- Generation Time: Dec 12, 2021 at 12:29 AM
 -- Server version: 5.5.68-MariaDB
 -- PHP Version: 5.6.40
 
@@ -109,7 +109,7 @@ CREATE TABLE `employee` (
 --
 
 INSERT INTO `employee` (`e_id`, `name`, `lastname`, `email`, `password_hash`, `birthday`, `salary`, `position`) VALUES
-(6, 'Ahmad', 'sdfghj', 'extremegames6109@gmail.com', '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5', '2021-12-29', NULL, NULL);
+(11, 'a', 'a', 'a@a', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '2021-12-22', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -157,6 +157,13 @@ CREATE TABLE `guides` (
   `status` varchar(255) COLLATE utf16_turkish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
+--
+-- Dumping data for table `guides`
+--
+
+INSERT INTO `guides` (`tg_id`, `ts_id`, `e_id`, `status`) VALUES
+(13, 2, 11, 'approved');
+
 -- --------------------------------------------------------
 
 --
@@ -187,6 +194,13 @@ CREATE TABLE `reservation` (
   `number` int(11) NOT NULL,
   `status` varchar(255) COLLATE utf16_turkish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
+
+--
+-- Dumping data for table `reservation`
+--
+
+INSERT INTO `reservation` (`res_id`, `c_id`, `ts_id`, `e_id`, `number`, `status`) VALUES
+(1, 26, 2, 11, 3, 'approved');
 
 -- --------------------------------------------------------
 
@@ -232,6 +246,14 @@ CREATE TABLE `thecustomer` (
   `profile_picture` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
+--
+-- Dumping data for table `thecustomer`
+--
+
+INSERT INTO `thecustomer` (`c_id`, `name`, `lastname`, `email`, `password_hash`, `birthday`, `profile_picture`) VALUES
+(26, 'Mehmet', 'Kck', 'a@a', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '2021-12-09', NULL),
+(27, 'a', 'a', 'v@a', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '2021-12-09', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -244,6 +266,14 @@ CREATE TABLE `tour` (
   `place` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `type` varchar(255) COLLATE utf16_turkish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
+
+--
+-- Dumping data for table `tour`
+--
+
+INSERT INTO `tour` (`t_id`, `place`, `type`) VALUES
+(2, 'place1', 'best tour name'),
+(3, 'place2', 'another tour name');
 
 -- --------------------------------------------------------
 
@@ -270,9 +300,18 @@ CREATE TABLE `tour_guide` (
   `lastname` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `email` varchar(190) COLLATE utf16_turkish_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
+  `birthday` date DEFAULT NULL,
   `registration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `profile_picture` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
+
+--
+-- Dumping data for table `tour_guide`
+--
+
+INSERT INTO `tour_guide` (`tg_id`, `name`, `lastname`, `email`, `password_hash`, `birthday`, `registration`, `profile_picture`) VALUES
+(13, 'ahmet', 'salman', 'a@a', 'a', '2021-12-09', '2021-12-11 14:04:42', NULL),
+(14, 'MCan', 'Kck', 'M@C', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '2021-12-01', '2021-12-11 23:13:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -434,7 +473,8 @@ ALTER TABLE `tour_guide_review`
 -- Indexes for table `tour_section`
 --
 ALTER TABLE `tour_section`
-  ADD PRIMARY KEY (`ts_id`);
+  ADD PRIMARY KEY (`ts_id`),
+  ADD KEY `fk_ts_tour` (`t_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -456,7 +496,7 @@ ALTER TABLE `customer_review`
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `flight`
@@ -480,7 +520,7 @@ ALTER TABLE `hotel`
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `room`
@@ -492,13 +532,19 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `thecustomer`
 --
 ALTER TABLE `thecustomer`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `tour`
+--
+ALTER TABLE `tour`
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tour_guide`
 --
 ALTER TABLE `tour_guide`
-  MODIFY `tg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `tg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tour_guide_review`
@@ -587,6 +633,12 @@ ALTER TABLE `tour_activity`
 ALTER TABLE `tour_guide_review`
   ADD CONSTRAINT `fk_tgr_tour_guide` FOREIGN KEY (`tg_id`) REFERENCES `tour_guide` (`tg_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tgr_tour_section` FOREIGN KEY (`ts_id`) REFERENCES `tour_section` (`ts_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tour_section`
+--
+ALTER TABLE `tour_section`
+  ADD CONSTRAINT `fk_ts_tour` FOREIGN KEY (`t_id`) REFERENCES `tour` (`t_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
