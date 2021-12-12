@@ -1,5 +1,23 @@
 <?php
 include("../session.php");
+$cid = $_SESSION['id'];
+
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname FROM tour_section, reservation, guides, tour, tour_guide WHERE tour.t_id = tour_section.t_id AND reservation.ts_id = tour_section.ts_id AND guides.tg_id = tour_guide.tg_id AND guides.ts_id = tour_section.ts_id AND reservation.status = 'approved' AND reservation.c_id = $cid ";
+$result = $db -> query($sql);
+
+if(isset($_POST['ResDetails']))
+{
+    $resId = $_POST['details'];
+    echo "<h1>Reservation Details</h1>";
+    // echo "location: reservationDetails.php?resId=$resId";
+    header("location: reservationDetails.php?resId=$resId");
+}
+
+if(isset($_POST['CancelRes']))
+{   
+    echo "<h1>Cancel Reservation</h1>";
+    echo $_POST['cancelRes'];
+}
 ?>
 
 
@@ -17,36 +35,48 @@ include("../session.php");
 </head>
 
 <body>
-    <!-- Beginning of Navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resNav">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="#" class="navbar-brand">Company Logo</a>
-        </div>
-        <div class="collapse navbar-collapse" id="resNav">
-            <ul class="nav navbar-nav navbar-right">
-                <div>
-                    <form action="post">
-                        <input type="submit" name="flight" class="btn btn-primary" value="Reserve a Flight" />
-                        <input type="submit" name="pastTour" class="btn btn-secondary" value="Past Tours" />
-                        <input type="submit" name="bookTour" class="btn btn-info" value="Book a Tour" />
-                        <input type="submit" name="hotel" class="btn btn-warning" value="Reserve Hotel" />
-                        <input type="submit" name="profile" class="btn btn-warning" value="Profile" />
-                    </form>
-                    <form action="../logout.php">
-                        <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
-                    </form>
-                </div>
-            </ul>
+    <div class="pill-nav">
+        <a href="./dashboardC.php">Home</a>
+        <a href="CS-353/src/Customer/dashboardC.php">News</a>
+        <a href="#contact">Contact</a>
+        <a href="#about">About</a>
+        <form action="../logout.php">
+            <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
+        </form>
+    </div>
+    <br>
+    <table class="table">
+        <thead>
 
-        </div>
+            <tr>
+                <th scope="col">Tour Name</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Tour Guide Name</th>
+            </tr>
+        </thead>
+        <tbody>
 
-    </nav>
-    <!-- End of Navbar -->
+            <?php while($row = $result->fetch_assoc()) : ?>
+            <tr id=<?php $row['res_id']?>>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td>
+                    <form method="post" action="dashboardC.php"> <button type="submit"
+                            name="ResDetails">Details</button> <input type="hidden" name="details"
+                            value="<?php echo $row['res_id']; ?>"> </form>
+                </td>
+                <td>
+                    <form method="post" action="dashboardC.php"> <button type="submit" name="CancelRes">Cancel
+                            Reservation</button> <input type="hidden" name="cancelRes"
+                            value="<?php echo $row['res_id']; ?>"> </form>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
 </body>
 
 </html>
