@@ -1,2 +1,2 @@
 <?php
-header("Location: ./src/login/");
+    header("Location: ./src");
