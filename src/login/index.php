@@ -9,12 +9,11 @@ if( isset($_SESSION['id'])){
     else if( strcmp("employee", $_SESSION['type'] ?? "none") == 0) {
         header("Location: ../employee");
     }
-    // TODO IT is up to you, Ahmad and Guven, to update or not to update the redirection
-    /*
+    
     else if( strcmp("thecustomer", $_SESSION['type'] ?? "none") == 0) {
-        header("Location: ../customer/dashboardC");
+        header("Location: ../customer");
     }
-    */
+    
     // else continue (do nothing)
 }
 
@@ -44,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 $_SESSION['id'] = $row['c_id'];
                 $_SESSION['type'] = "thecustomer";
-                header("location: ../Customer/dashboardC.php");
+                header("location: ../customer");
             } else if ($userType == 'employee') 
             {
                 $_SESSION['id'] = $row['e_id'];

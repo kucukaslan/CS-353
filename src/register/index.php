@@ -9,12 +9,11 @@ if( isset($_SESSION['id'])){
     else if( strcmp("employee", $_SESSION['type'] ?? "none") == 0) {
         header("Location: ../employee");
     }
-    // TODO IT is up to you, Ahmad and Guven, to update or not to update the redirection
-    /*
+    
     else if( strcmp("thecustomer", $_SESSION['type'] ?? "none") == 0) {
-        header("Location: ../customer/dashboardC");
+        header("Location: ../customer");
     }
-    */
+    
     // else continue (do nothing)
 }
 

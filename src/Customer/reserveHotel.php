@@ -1,12 +1,11 @@
 <?php
-include("../session.php");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Employee Dashboard</title>
+    <title>Customer Dashboard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../styles/navbar.php">
@@ -16,15 +15,19 @@ include("../session.php");
 </head>
 
 <body>
-    <div class="pill-nav">
-        <a class="active" href="#home">Home</a>
-        <a href="#news">News</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About</a>
+    <div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">
+        <a href="../customer">Home</a>
+        <a href="reserveFlight.php">Reserve a Flight</a>
+        <a href="pastTours.php">Past Tours</a>
+        <a href="bookTour.php">Book a Tour</a>
+        <a class="nav-link active" href="reserveHotel.php">Reserve a Hotel</a>
+        <a href="profile.php">Profile</a>
         <form action="../logout.php">
             <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
         </form>
     </div>
+    <!-- End of Navbar -->
+    <h1>welcome to reserve Hotel</h1>
 </body>
 
 </html>
