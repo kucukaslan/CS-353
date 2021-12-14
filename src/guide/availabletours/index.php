@@ -1,5 +1,6 @@
 <?php
-include("../../session.php");
+require_once(__DIR__."/../../session.php");
+
 if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }

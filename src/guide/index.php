@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include("../session.php");
+require_once(__DIR__."/../session.php");
 if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
@@ -72,7 +72,18 @@ if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     if($_SERVER['REQUEST_METHOD'] == "POST") {
         var_dump($_POST);
     }
-     ?>    
+    else if ($_SERVER['REQUEST_METHOD'] == "GET") { 
+        if (isset($_GET['op'])) {
+            $op = $_GET['op'];
+            if ($op == "details") {
+                header("location: details", true, 301);
+            }
+            else if ($op == "feedback") {
+                header("location: details", true, 301);
+            }
+        }
+    }
+        ?>    
 </p>
 
     <h3>Your tours</h3>

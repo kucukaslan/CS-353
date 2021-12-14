@@ -67,7 +67,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     <br>
     <br>
 
-    <h2> Profile</h2>
+    <h2> Details of the Tour</h2>
 </body>
 
 </html>
