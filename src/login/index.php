@@ -35,6 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $count = mysqli_num_rows($result);
 
         if ($count == 1) {
+            $_SESSION['name'] = $row['name'];
+            $_SESSION['lastname'] = $row['lastname'];
+            $_SESSION['email'] = $row['email'];
+            $_SESSION['birthday'] = $row['birthday'];
             if ($userType == 'thecustomer') 
             {
                 $_SESSION['id'] = $row['c_id'];
