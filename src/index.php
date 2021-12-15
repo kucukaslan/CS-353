@@ -9,7 +9,7 @@ else if( strcmp("employee", $_SESSION['type'] ?  $_SESSION['type'] : "none") == 
     header("Location: employee");
 }
 else if( strcmp("thecustomer", $_SESSION['type'] ?  $_SESSION['type'] : "none") == 0) {
-    header("Location: customer/dashboardC");
+    header("Location: customer/");
 }
 else
     header("Location: login");

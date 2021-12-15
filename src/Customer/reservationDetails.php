@@ -1,5 +1,6 @@
 <?php
 include("../session.php");
+require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
 
@@ -13,35 +14,21 @@ $sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, a
 WHERE reservation_activity.a_id = activity.a_id AND
 res_id = $resId AND activity.type = 'extra'";
 $resultExtra = $db -> query($sql);
-
-// echo "<h1>Welcome to Reservation Details with ID of $resId</h1>";
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Customer Dashboard</title>
+    <title>Reservation Details</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../styles/navbar.php">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-<div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">
-        <a href="../customer">Home</a>
-        <a href="reserveFlight.php">Reserve a Flight</a>
-        <a href="pastTours.php">Past Tours</a>
-        <a href="bookTour.php">Book a Tour</a>
-        <a href="reserveHotel.php">Reserve a Hotel</a>
-        <a href="profile.php">Profile</a>
-        <form action="../logout.php">
-            <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
-        </form>
-    </div>
+    <?php
+        echo getCustomerNav("./");
+    ?>
     <br>
     <h3>The Activities For Current Tour</h3>
     <table class="table">
@@ -66,7 +53,8 @@ $resultExtra = $db -> query($sql);
                 <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
                 <td>
-                    <form method="post" action="index.php"> <button class="btn btn-warning" type="submit" name="ResDetails">Cancel Extra
+                    <form method="post" action="index.php"> <button class="btn btn-warning" type="submit"
+                            name="ResDetails">Cancel Extra
                             Event</button> <input type="hidden" name="details" value="<?php echo $row['a_id']; ?>">
                     </form>
                 </td>

@@ -1,5 +1,6 @@
 <?php
 include("../session.php");
+require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
@@ -58,24 +59,12 @@ if (isset($_POST['CancelBook']))
     <title>Customer Dashboard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../styles/navbar.php">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">
-        <a class="nav-link active" href="../customer">Home</a>
-        <a href="reserveFlight.php">Reserve a Flight</a>
-        <a href="pastTours.php">Past Tours</a>
-        <a href="bookTour.php">Book a Tour</a>
-        <a href="reserveHotel.php">Reserve a Hotel</a>
-        <a href="profile.php">Profile</a>
-        <form action="../logout.php">
-            <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
-        </form>
-    </div>
+    <?php
+        echo getCustomerNav("./");
+    ?>
     <br>
     <table class="table">
         <thead>
@@ -90,17 +79,21 @@ if (isset($_POST['CancelBook']))
         <tbody>
             <h3> Your Tour Reservations </h3>
             <?php while ($row = $resultTour->fetch_assoc()) : ?>
-                <tr id=<?php $row['res_id'] ?>>
-                    <td> <?php echo $row['type'] ?> </td>
-                    <td> <?php echo $row['start_date'] ?> </td>
-                    <td> <?php echo $row['end_date'] ?> </td>
-                    <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
-                    <td>
-                        <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="ResDetails">Details</button> <button onclick="return  confirm('Are You Sure You Want To Delete This Reservation Y/N')" class="btn btn-warning" type="submit" name="CancelRes">Cancel
-                                Reservation</button> <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>"> </form>
-                    </td>
+            <tr id=<?php $row['res_id'] ?>>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td>
+                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
+                            name="ResDetails">Details</button> <button
+                            onclick="return  confirm('Are You Sure You Want To Delete This Reservation Y/N')"
+                            class="btn btn-warning" type="submit" name="CancelRes">Cancel
+                            Reservation</button> <input type="hidden" name="resId"
+                            value="<?php echo $row['res_id']; ?>"> </form>
+                </td>
 
-                </tr>
+            </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
@@ -120,18 +113,21 @@ if (isset($_POST['CancelBook']))
         <tbody>
             <h3> Your Hotel Bookings </h3>
             <?php while ($row = $resultHotel->fetch_assoc()) : ?>
-                <tr id=<?php $row['b_id'] ?>>
-                    <td> <?php echo $row['name'] ?> </td>
-                    <td> <?php echo $row['type'] ?> </td>
-                    <td> <?php echo $row['start_date'] ?> </td>
-                    <td> <?php echo $row['end_date'] ?> </td>
-                    <td>
-                        <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="BookDetails">Details</button> <button onclick="return  confirm('Are You Sure You Want To Delete This Booking Y/N')" class="btn btn-warning" type="submit" name="CancelBook">Cancel
-                                Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
-                        </form>
-                    </td>
+            <tr id=<?php $row['b_id'] ?>>
+                <td> <?php echo $row['name'] ?> </td>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td>
+                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
+                            name="BookDetails">Details</button> <button
+                            onclick="return  confirm('Are You Sure You Want To Delete This Booking Y/N')"
+                            class="btn btn-warning" type="submit" name="CancelBook">Cancel
+                            Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
+                    </form>
+                </td>
 
-                </tr>
+            </tr>
             <?php endwhile; ?>
         </tbody>
     </table>

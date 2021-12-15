@@ -2,6 +2,7 @@
 require_once(__DIR__."/../../session.php");
 require_once("../../config.php");
 require_once(getRootDirectory()."/util/navbar.php");
+
 if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
@@ -24,16 +25,18 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <!-- Beginning of Navbar -->
     <?php
         echo getGuideNavBar("../");
     ?>
+    <!-- End of Navbar -->
     <!-- First four lines are invisible they're behind the navbar!-->
     <br>
     <br>
     <br>
     <br>
 
-    <h2> Profile</h2>
+    <h2> Details of the Tour</h2>
 </body>
 
 </html>
