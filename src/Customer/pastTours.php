@@ -77,7 +77,9 @@ $resultTour = $db -> query($sql);
                 <td>
                     <form method="post" action="pastTours.php"> <button class="btn btn-primary" type="submit" name="TGProfile">Tour Guide Profile</button>
                         <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
+                        
                         <button class="btn btn-primary" type="submit" name="RateTour">Rate</button>
+
                         <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
                         <input type="hidden" name="tgId" value="<?php echo $row['tg_id']; ?>">
                         <input type="hidden" name="tsId" value="<?php echo $row['ts_id']; ?>">

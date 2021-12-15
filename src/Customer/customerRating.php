@@ -3,19 +3,20 @@ include("../session.php");
 $cid = $_SESSION['id'];
 $resId = $_GET['resId'];
 //echo $cid;
-$tsId = $_GET['tsId'];
-echo $tsId;
+//echo $tsId;
 
 if (isset($_POST['submitrate'])) {
-    $resId = $_POST['resId'];
+    //$resId2 = $_POST['resId'];
     $tourrating = $_POST['tourrating'];
     $tgrating = $_POST['tgrating'];
     $tourcommentarea = $_POST['tourcommentarea'];
     $tgreviewarea = $_POST['tgreviewarea'];
+    $tsId = $_POST['tsId'];
 
     $sql = "INSERT INTO customer_review (tour_rate, tour_comment, guide_rate, guide_comment, c_id, ts_id) VALUES ($tourrating, '$tourcommentarea', $tgrating, '$tgreviewarea', $cid, $tsId) ";
     $db->query($sql);
-    header("Refresh:0");
+
+    header("location: pastTours.php?tsId=$tsId&resId=$resId");
 }
 
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
@@ -62,7 +63,7 @@ $resultTour = $db -> query($sql);
     <?php while ($row = $resultTour->fetch_assoc()) : ?>
         <h3>You Are Rating Tour <u><?php echo $row['type']; ?></u> , with Tour Guide <u><?php echo $row['name']; ?> <?php echo $row['lastname']; ?></u> </h3>
         <br>
-        <form method="post" action="pastTours.php">
+        <form method="post" action="customerRating.php">
             <div>
                 <label>Tour Rating:</label>
                 <select name="tourrating" id="tourrating">
