@@ -3,6 +3,8 @@ include("../session.php");
 $cid = $_SESSION['id'];
 $resId = $_GET['resId'];
 echo $cid;
+$tsId = $_GET['tsId'];
+echo $tsId;
 
 if (isset($_POST['submitrate'])) {
     $resId = $_POST['resId'];
@@ -10,11 +12,10 @@ if (isset($_POST['submitrate'])) {
     $tgrating = $_POST['tgrating'];
     $tourcommentarea = $_POST['tourcommentarea'];
     $tgreviewarea = $_POST['tgreviewarea'];
-    $tsId = $_POST['tsId'];
 
     $sql = "INSERT INTO customer_review VALUES ($tourrating, $tourcommentarea, $tgrating, $tourcommentarea, $cid, $tsId) ";
     $db->query($sql);
-    header("Refresh:0");
+    //header("Refresh:0");
 }
 
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id

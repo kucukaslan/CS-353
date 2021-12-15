@@ -11,11 +11,11 @@ if (isset($_POST['TGProfile'])) {
     header("location: profile.php?tgId=$tgId");
 }
 if (isset($_POST['RateTour'])) {
-    $resId = $_POST['resId'];
-    header("location: customerRating.php?resId=$resId");
+    $tsId = $_POST['tsId'];
+    header("location: customerRating.php?resId=$tsId");
 }
 
-$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
 FROM reservation, tour_section, guides, tour_guide, tour
 WHERE tour.t_id = tour_section.t_id 
 AND reservation.ts_id = tour_section.ts_id 
@@ -79,6 +79,7 @@ $resultTour = $db -> query($sql);
                         <button class="btn btn-primary" type="submit" name="RateTour">Rate</button>
                         <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
                         <input type="hidden" name="tgId" value="<?php echo $row['tg_id']; ?>">
+                        <input type="hidden" name="tsId" value="<?php echo $row['ts_id']; ?>">
                     </form>
                 </td>
 
