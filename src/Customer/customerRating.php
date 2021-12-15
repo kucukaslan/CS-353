@@ -2,7 +2,7 @@
 include("../session.php");
 $cid = $_SESSION['id'];
 $resId = $_GET['resId'];
-
+echo $cid;
 
 if (isset($_POST['submitrate'])) {
     $resId = $_POST['resId'];
@@ -10,8 +10,9 @@ if (isset($_POST['submitrate'])) {
     $tgrating = $_POST['tgrating'];
     $tourcommentarea = $_POST['tourcommentarea'];
     $tgreviewarea = $_POST['tgreviewarea'];
+    $tsId = $_POST['tsId'];
 
-    $sql = "INSERT INTO customer_review VALUES (1,$tourrating, $tourcommentarea, $tgrating, $tourcommentarea, $cid, $tsId) ";
+    $sql = "INSERT INTO customer_review VALUES ($tourrating, $tourcommentarea, $tgrating, $tourcommentarea, $cid, $tsId) ";
     $db->query($sql);
     header("Refresh:0");
 }
