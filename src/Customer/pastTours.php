@@ -12,7 +12,8 @@ if (isset($_POST['TGProfile'])) {
 }
 if (isset($_POST['RateTour'])) {
     $tsId = $_POST['tsId'];
-    header("location: customerRating.php?tsId=$tsId");
+    $resId = $_POST['resId'];
+    header("location: customerRating.php?tsId=$tsId&resId=$resId");
 }
 
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
