@@ -2,7 +2,7 @@
 include("../session.php");
 $cid = $_SESSION['id'];
 $resId = $_GET['resId'];
-echo $cid;
+//echo $cid;
 $tsId = $_GET['tsId'];
 echo $tsId;
 
