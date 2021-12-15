@@ -1,4 +1,22 @@
 <?php
+include("../session.php");
+$cid = $_SESSION['id'];
+
+if (isset($_POST['TourDetails'])) {
+    $t_id = $_POST['resId'];
+    header("location: reservationDetails.php?resId=$t_id");
+}
+
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+FROM reservation, tour_section, guides, tour_guide, tour
+WHERE tour.t_id = tour_section.t_id 
+AND reservation.ts_id = tour_section.ts_id 
+AND guides.tg_id = tour_guide.tg_id 
+AND guides.ts_id = tour_section.ts_id 
+AND reservation.status = 'passed' 
+AND reservation.c_id = $cid ";
+
+$resultTour = $db -> query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +45,39 @@
         </form>
     </div>
     <!-- End of Navbar -->
-    <h1>welcome to past tours</h1>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Tour Name</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Tour Guide Name</th>
+            <th scope="col">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <h3> Your Past Tours </h3>
+        <?php while ($row = $resultTour->fetch_assoc()) : ?>
+            <tr id=<?php $row['res_id'] ?>>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td>
+                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="ResDetails">Tour Guide Profile</button>
+                        <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
+                        <button class="btn btn-primary" type="submit" name="ResDetails">Rate</button>
+                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>"> </form>
+                </td>
+
+            </tr>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
+
+
+
 </body>
 
 </html>
