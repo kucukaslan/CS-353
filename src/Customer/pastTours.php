@@ -3,17 +3,26 @@ include("../session.php");
 $cid = $_SESSION['id'];
 
 if (isset($_POST['TourDetails'])) {
-    $t_id = $_POST['resId'];
-    header("location: reservationDetails.php?resId=$t_id");
+    $resId = $_POST['resId'];
+    header("location: reservationDetails.php?resId=$resId");
+}
+if (isset($_POST['TGProfile'])) {
+    $tgId = $_POST['tgId'];
+    header("location: profile.php?tgId=$tgId");
+}
+if (isset($_POST['RateTour'])) {
+    $resId = $_POST['resId'];
+    header("location: customerRating.php?resId=$resId");
 }
 
-$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id
 FROM reservation, tour_section, guides, tour_guide, tour
 WHERE tour.t_id = tour_section.t_id 
 AND reservation.ts_id = tour_section.ts_id 
 AND guides.tg_id = tour_guide.tg_id 
 AND guides.ts_id = tour_section.ts_id 
-AND reservation.status = 'passed' 
+AND reservation.status = 'approved' 
+AND tour_section.end_date < NOW()
 AND reservation.c_id = $cid ";
 
 $resultTour = $db -> query($sql);
@@ -65,10 +74,12 @@ $resultTour = $db -> query($sql);
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
                 <td>
-                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit" name="ResDetails">Tour Guide Profile</button>
+                    <form method="post" action="pastTours.php"> <button class="btn btn-primary" type="submit" name="TGProfile">Tour Guide Profile</button>
                         <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
-                        <button class="btn btn-primary" type="submit" name="ResDetails">Rate</button>
-                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>"> </form>
+                        <button class="btn btn-primary" type="submit" name="RateTour">Rate</button>
+                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
+                        <input type="hidden" name="tgId" value="<?php echo $row['tg_id']; ?>">
+                    </form>
                 </td>
 
             </tr>

@@ -9,6 +9,7 @@ AND reservation.ts_id = tour_section.ts_id
 AND guides.tg_id = tour_guide.tg_id 
 AND guides.ts_id = tour_section.ts_id 
 AND reservation.status = 'approved' 
+AND tour_section.start_date > NOW()
 AND reservation.c_id = $cid ";
 
 $resultTour = $db->query($sql);
