@@ -13,9 +13,9 @@ if (isset($_POST['submitrate'])) {
     $tourcommentarea = $_POST['tourcommentarea'];
     $tgreviewarea = $_POST['tgreviewarea'];
 
-    $sql = "INSERT INTO customer_review VALUES ($tourrating, $tourcommentarea, $tgrating, $tourcommentarea, $cid, $tsId) ";
+    $sql = "INSERT INTO customer_review (tour_rate, tour_comment, guide_rate, guide_comment, c_id, ts_id) VALUES ($tourrating, '$tourcommentarea', $tgrating, '$tgreviewarea', $cid, $tsId) ";
     $db->query($sql);
-    //header("Refresh:0");
+    header("Refresh:0");
 }
 
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
