@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__."/../../session.php");
+require_once("../../config.php");
+require_once(getRootDirectory()."/util/navbar.php");
 
 if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
@@ -24,42 +26,9 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 </head>
 <body>
     <!-- Beginning of Navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resNav">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a action=".." href="./.." class="navbar-brand">Company Logo</a>
-        </div>
-        <div class="collapse navbar-collapse" id="resNav">
-            <ul class="nav navbar-nav navbar-right">
-                    <form action="../../logout.php">
-                            <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
-                        </form>
-                </ul>    
-
-            <ul class="nav navbar-nav navbar-right">
-                <div>
-                    <form action="../availabletours" method="post">
-                        <input type="submit" name="availabletours" class="btn btn-primary" value="Available Tours" />
-                    </form>
-                </div>    
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <div>
-                    <form action="../profile" method="post">
-                         <input type="submit" name="profile" class="btn btn-secondary" value="Profile" />
-                    </form>
-                </div>
-            </ul>
-            
-
-        </div>
-
-    </nav>
+    <?php
+        echo getGuideNavBar("../");
+    ?>
     <!-- End of Navbar -->
     <!-- First four lines are invisible they're behind the navbar!-->
     <br>
