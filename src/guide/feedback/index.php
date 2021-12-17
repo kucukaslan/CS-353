@@ -3,7 +3,7 @@ require_once(__DIR__."/../../session.php");
 require_once("../../config.php");
 require_once(getRootDirectory()."/util/navbar.php");
 
-if(isset($_SESSION['id']) && strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
+if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
 
@@ -11,10 +11,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
 }
  ?> 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tour Details</title>
+  <title>Feedback</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../../styles/navbar.php">
@@ -32,14 +34,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     <br>
     <br>
     <br>
-    <br>
-
-    <h2> Details of the Tour</h2>
-    <?php
-        $tour_id = $_SESSION['ts_id'];
-    
-    ?>
-    
+    <h2> Give Feedback</h2>
 </body>
 
 </html>
