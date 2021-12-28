@@ -10,7 +10,7 @@ AND reservation.ts_id = tour_section.ts_id
 AND guides.tg_id = tour_guide.tg_id 
 AND guides.ts_id = tour_section.ts_id 
 AND reservation.status = 'approved' 
-AND tour_section.start_date > NOW()
+AND tour_section.end_date > NOW()
 AND reservation.c_id = $cid ";
 
 $resultTour = $db->query($sql);
@@ -85,12 +85,19 @@ if (isset($_POST['CancelBook']))
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
                 <td>
-                    <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
-                            name="ResDetails">Details</button> <button
-                            onclick="return  confirm('Are You Sure You Want To Delete This Reservation Y/N')"
-                            class="btn btn-warning" type="submit" name="CancelRes">Cancel
-                            Reservation</button> <input type="hidden" name="resId"
-                            value="<?php echo $row['res_id']; ?>"> </form>
+                    <form method="post" action="index.php">
+                        <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
+                        <?php
+                        $todayDate = date('Y-m-d');
+                        // echo $row['start_date'];
+                        if ($row['start_date'] > $todayDate)
+                        {
+                            echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
+                            class="btn btn-warning" type="submit" name="CancelRes">Cancel Reservation</button>';
+                        }
+                         ?>
+                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
+                    </form>
                 </td>
 
             </tr>

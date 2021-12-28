@@ -11,19 +11,27 @@ if (isset($_POST['TGProfile'])) {
     header("location: profile.php?tgId=$tgId");
 }
 if (isset($_POST['ReserveTour'])) {
-}
-if (isset($_POST['RemoveExtAct'])) {
+    $ts_id = $_POST['tsId'];
+    $number = $_POST['numofPeople'];
+    if ($number < 1) {
+        echo '<script>alert("You Have To Reserve For 1 or More People")</script>';
+    } else {
+        $sql = "INSERT INTO reservation (c_id, ts_id, e_id, number, status, isRated, reason) VALUES ($cid, $ts_id, null, $number, 'pending', 'no', null)";
+        echo $sql;
+        $db->query($sql);
+    }
 }
 
-$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
-FROM reservation, tour_section, guides, tour_guide, tour
+$sql = "SELECT tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
+FROM tour_section, guides, tour_guide, tour
 WHERE tour.t_id = tour_section.t_id 
-AND reservation.ts_id = tour_section.ts_id 
 AND guides.tg_id = tour_guide.tg_id 
-AND guides.ts_id = tour_section.ts_id 
-AND reservation.status = 'approved' 
-AND tour_section.end_date > NOW()
-AND reservation.c_id = $cid "; #!!!here we are not deleting tour already booked by customer!!!
+AND guides.ts_id = tour_section.ts_id
+AND guides.status = 'approved'
+AND tour_section.start_date > NOW()
+AND tour_section.ts_id NOT IN (SELECT reservation.ts_id
+FROM reservation 
+WHERE reservation.c_id = $cid)";
 
 if (isset($_POST['filterTours'])) {
     $start = $_POST['tour-start'];
@@ -37,7 +45,7 @@ if (isset($_POST['clearFilter'])) {
     str_replace("AND tour_section.start_date >= '$start' AND tour_section.end_date <= '$end'", "", $sql);
 }
 
-$resultTour = $db -> query($sql);
+$resultTour = $db->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -91,32 +99,26 @@ $resultTour = $db -> query($sql);
         <tbody>
             <h3> Available Tours </h3>
             <?php while ($row = $resultTour->fetch_assoc()) : ?>
-            <tr id=<?php $row['res_id'] ?>>
-                <td> <?php echo $row['type'] ?> </td>
-                <td> <?php echo $row['start_date'] ?> </td>
-                <td> <?php echo $row['end_date'] ?> </td>
-                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
-                <td>
-                    <form method="post" action="bookTour.php"> <button class="btn btn-primary" type="submit"
-                            name="TGProfile">Tour Guide Profile</button>
-                        <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
+                <tr id=<?php $row['ts_id'] ?>>
+                    <td> <?php echo $row['type'] ?> </td>
+                    <td> <?php echo $row['start_date'] ?> </td>
+                    <td> <?php echo $row['end_date'] ?> </td>
+                    <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                    <td>
+                        <form method="post" action="bookTour.php">
+                            <input type="number" id="people" name="numofPeople" placeholder="# of People">
+                            <button class="btn btn-primary" type="submit" name="TGProfile">Tour Guide Profile</button>
+                            <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
 
-                        <button class="btn btn-primary" type="submit" name="ReserveTour">Reserve</button>
-                        <button class="btn btn-primary" type="submit" name="RemoveExtAct">Remove Extra Activity</button>
+                            <button class="btn btn-primary" type="submit" name="ReserveTour">Reserve</button>
 
-                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
-                        <input type="hidden" name="tgId" value="<?php echo $row['tg_id']; ?>">
-                        <input type="hidden" name="tsId" value="<?php echo $row['ts_id']; ?>">
-                    </form>
-                </td>
-
-            </tr>
+                            <input type="hidden" name="tgId" value="<?php echo $row['tg_id']; ?>">
+                            <input type="hidden" name="tsId" value="<?php echo $row['ts_id']; ?>">
+                        </form>
+                    </td>
+                </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
-
-
-
 </body>
-
 </html>
