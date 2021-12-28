@@ -15,8 +15,19 @@ if (isset($_POST['bookbutton'])) {
 $sql = "SELECT flight.f_id, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity
 FROM flight, airport as dept, airport as dest
 WHERE flight.dept_airport = dept.airport_code
-AND flight.dest_airport = dest.airport_code
-;";
+AND flight.dest_airport = dest.airport_code ORDER BY flight.f_id ";
+
+if (isset($_POST['filterFlights'])) {
+    $arrival = $_POST['arrival'];
+    $depart = $_POST['depart'];
+    $sql .= "AND dept.city LIKE '%$depart%' AND dest.city LIKE '%$arrival%';";
+}
+
+if (isset($_POST['clearFilter'])) {
+    $arrival = $_POST['arrival'];
+    $depart = $_POST['depart'];
+    str_replace("AND dept_city LIKE '%$depart%' AND dest_city LIKE '%$arrival%'", "", $sql);
+}
 
 $resultTour = $db -> query($sql);
 ?>
@@ -48,6 +59,16 @@ $resultTour = $db -> query($sql);
 </div>
 <!-- End of Navbar -->
 <br>
+<form method="post" action="reserveFlight.php">
+        <label for="depart">Departure Location:</label>
+        <input type="text" id="depart" name="depart">
+
+        <label for="arrival">Arrival Location:</label>
+        <input type="text" id="arrival" name="arrival">
+
+        <button class="btn btn-primary" type="submit" name="filterFlights">Filter</button>
+        <button class="btn btn-warning" type="submit" name="clearFilter">Clear Filter</button>
+    </form>
 <table class="table">
     <thead>
     <tr>

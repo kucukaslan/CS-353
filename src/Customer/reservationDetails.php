@@ -3,7 +3,6 @@ include("../session.php");
 require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
-
 $resId = $_GET['resId'];
 $sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type FROM reservation_activity, activity
 WHERE reservation_activity.a_id = activity.a_id AND
@@ -14,6 +13,15 @@ $sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, a
 WHERE reservation_activity.a_id = activity.a_id AND
 res_id = $resId AND activity.type = 'extra'";
 $resultExtra = $db -> query($sql);
+
+if (isset($_POST['cancelEvent'])) {
+    $activityId = $_POST['details'];
+    $sql = "DELETE FROM reservation_activity WHERE res_id = $resId AND a_id = $activityId";
+    $db->query($sql);
+    header("Refresh:0");
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +38,7 @@ $resultExtra = $db -> query($sql);
         echo getCustomerNav("./");
     ?>
     <br>
+
     <h3>The Activities For Current Tour</h3>
     <table class="table">
         <thead>
@@ -53,10 +62,19 @@ $resultExtra = $db -> query($sql);
                 <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
                 <td>
-                    <form method="post" action="index.php"> <button class="btn btn-warning" type="submit"
-                            name="ResDetails">Cancel Extra
-                            Event</button> <input type="hidden" name="details" value="<?php echo $row['a_id']; ?>">
+
+                    <form method="post" action="reservationDetails.php?resId=<?php echo $resId?>">
+                        <?php 
+                    $todayDate = date('Y-m-d');
+                    $todayTime = date('H:i:s');
+                    if ($row['date'] > $todayDate || ($row['date'] == $todayDate && $row['start_time'] < $todayTime))
+                    {
+                        echo '<button class="btn btn-warning" type="submit"
+                            name="cancelEvent">Cancel Extra
+                            Event</button>'; } ?>
+                        <input type="hidden" name="details" value="<?php echo $row['a_id']; ?>">
                     </form>
+
                 </td>
             </tr>
             <?php endwhile; ?>
