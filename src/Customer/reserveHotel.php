@@ -94,6 +94,7 @@ for ($i=0; $i < count($rr); $i++) {
             <td> <?php echo $rr[$i]['phone'] ?> </td>
             <td> <?php echo $rr[$i]['rating'] ?> </td>
             <td> Error </td>
+            <form method="post" action="reserveHotel.php">
             <td>
                 <select name="rooms" id="rooms">
                     <?php for (; $i2 < $rr[$i]['roomC']+$pk; $i2++) { ?>
@@ -108,13 +109,13 @@ for ($i=0; $i < count($rr); $i++) {
                 <input type="date" id="enddate" name="enddate">
             </td>
             <td>
-                <form method="post" action="reserveHotel.php"> <button onclick="return  confirm('Are You Sure You Want To Reserve This Room Y/N')"
+                 <button onclick="return  confirm('Are You Sure You Want To Reserve This Room Y/N')"
                                                                        class="btn btn-primary" type="submit" name="Reserveroom">Reserve Room</button>
 
                     <input type="hidden" name="resId" value="<?php echo $rr[$i]['h_id']; ?>">
-                </form>
-            </td>
 
+            </td>
+            </form>
         </tr>
     <?php $pk=$i2; } ?>
     </tbody>
