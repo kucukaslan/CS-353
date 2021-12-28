@@ -9,14 +9,37 @@ WHERE reservation_activity.a_id = activity.a_id AND
 res_id = $resId AND activity.type = 'basic'";
 $resultBasic = $db -> query($sql);
 
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type FROM reservation_activity, activity
+$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type 
+FROM reservation_activity, activity
 WHERE reservation_activity.a_id = activity.a_id AND
-res_id = $resId AND activity.type = 'extra'";
-$resultExtra = $db -> query($sql);
+res_id = $resId AND activity.type = 'extra'
+ORDER BY activity.date, activity.start_time";
+$resultExtraReserved = $db -> query($sql);
+
+$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type
+FROM tour_activity, reservation, activity
+WHERE reservation.ts_id = tour_activity.ts_id
+AND activity.a_id = tour_activity.a_id
+AND type = 'extra'
+AND reservation.res_id = $resId
+AND activity.a_id NOT IN (SELECT activity.a_id
+FROM reservation_activity, activity
+WHERE reservation_activity.a_id = activity.a_id AND
+res_id = $resId AND activity.type = 'extra')
+ORDER BY activity.date, activity.start_time";
+$resultExtraNotReserved = $db -> query($sql);
 
 if (isset($_POST['cancelEvent'])) {
     $activityId = $_POST['details'];
     $sql = "DELETE FROM reservation_activity WHERE res_id = $resId AND a_id = $activityId";
+    $db->query($sql);
+    header("Refresh:0");
+}
+if (isset($_POST['reserveEvent'])) {
+    $activityId = $_POST['activityId'];
+    // echo "Reserved event $activityId with Reservation $resId";
+    $sql = "INSERT INTO reservation_activity VALUES ($resId, $activityId)";
+    echo $sql;
     $db->query($sql);
     header("Refresh:0");
 }
@@ -54,7 +77,7 @@ if (isset($_POST['cancelEvent'])) {
         </thead>
         <tbody>
 
-            <?php while($row = $resultExtra->fetch_assoc()) : ?>
+            <?php while($row = $resultExtraReserved->fetch_assoc()) : ?>
             <tr id=<?php $row['a_id']?>>
                 <td> <?php echo $row['name'] ?> </td>
                 <td> <?php echo $row['location'] ?> </td>
@@ -73,6 +96,24 @@ if (isset($_POST['cancelEvent'])) {
                             name="cancelEvent">Cancel Extra
                             Event</button>'; } ?>
                         <input type="hidden" name="details" value="<?php echo $row['a_id']; ?>">
+                    </form>
+
+                </td>
+            </tr>
+            <?php endwhile; ?>
+
+            <?php while($row = $resultExtraNotReserved->fetch_assoc()) : ?>
+            <tr id=<?php $row['a_id']?>>
+                <td> <?php echo $row['name'] ?> </td>
+                <td> <?php echo $row['location'] ?> </td>
+                <td> <?php echo $row['date'] ?> </td>
+                <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
+                <td> <?php echo $row['type'] ?> </td>
+                <td>
+
+                    <form method="post" action="reservationDetails.php?resId=<?php echo $resId?>"><button class="btn btn-info" type="submit"
+                            name="reserveEvent">Reserve Extra Event</button>
+                        <input type="hidden" name="activityId" value="<?php echo $row['a_id']; ?>">
                     </form>
 
                 </td>
