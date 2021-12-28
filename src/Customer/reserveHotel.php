@@ -12,8 +12,10 @@ if (isset($_POST['Reserveroom'])) {
     //header("Refresh:0");
 }
 
-$sql = "SELECT hotel.name, hotel.city, hotel.address, hotel.phone, hotel.rating, hotel.h_id
-FROM hotel ";
+$sql = "SELECT hotel.name, hotel.city, hotel.address, hotel.phone, hotel.rating, hotel.h_id, COUNT(room.r_id) as roomC
+FROM hotel, room 
+WHERE room.h_id = hotel.h_id
+GROUP BY hotel.h_id";
 
 
 $resultTour = $db -> query($sql);
@@ -29,7 +31,14 @@ while ($row = $resultTour->fetch_assoc()) {
 }
 while ($row2 = $resultTour2->fetch_assoc()) {
     $rr2[] = $row2;
-}
+}/*
+$i2=0;
+for ($i=0; $i < count($rr); $i++) {
+    echo 'hi ';
+    for (; $i2 < $rr[$i]['roomC']; $i2++) {
+        echo $rr2[$i2]['type'];
+    }
+}*/
 
 ?>
 
@@ -77,7 +86,7 @@ while ($row2 = $resultTour2->fetch_assoc()) {
     </thead>
     <tbody>
     <h3> Available Hotels </h3>
-    <?php for ($i=0; $i < count($rr); $i++) { ?>
+    <?php $i2=0; $pk=0; for ($i=0; $i < count($rr); $i++) { ?>
         <tr id=<?php $rr[$i]['h_id'] ?>>
             <td> <?php echo $rr[$i]['name'] ?> </td>
             <td> <?php echo $rr[$i]['city'] ?> </td>
@@ -87,7 +96,7 @@ while ($row2 = $resultTour2->fetch_assoc()) {
             <td> Error </td>
             <td>
                 <select name="rooms" id="rooms">
-                    <?php for ($i2=0; $i2 < count($rr2); $i2++) { ?>
+                    <?php for (; $i2 < $rr[$i]['roomC']+$pk; $i2++) { ?>
                         <option value="r1"><?php echo $rr2[$i2]['type'] ?></option>
                     <?php } ?>
                 </select>
@@ -107,7 +116,7 @@ while ($row2 = $resultTour2->fetch_assoc()) {
             </td>
 
         </tr>
-    <?php } ?>
+    <?php $pk=$i2; } ?>
     </tbody>
 </table>
 
