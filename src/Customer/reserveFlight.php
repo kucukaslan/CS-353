@@ -7,7 +7,7 @@ if (isset($_POST['bookbutton'])) {
     $numofpass = $_POST['numofpass'];
     $date = $_POST['date'];
 
-    $sql = "INSERT INTO flight_reservation (f_id, c_id, number_of_passengers, date) VALUES ($fid, $cid, $numofpass, $date) ";
+    $sql = "INSERT INTO flight_reservation (f_id, c_id, number_of_passengers, date) VALUES ($fid, $cid, $numofpass, '$date') ";
     $db->query($sql);
 }
 
