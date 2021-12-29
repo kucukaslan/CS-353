@@ -14,7 +14,7 @@ class TourSection
     private DateTime $end_date;
 
 
-    public function makeTourSection(PDO $pdo, int $ts_id) : TourSection {
+    public static function makeTourSection(PDO $pdo, int $ts_id) : TourSection {
         $ts = new TourSection();
         $sql = "SELECT * FROM ".TourSection::TOUR_SECTION_TABLE." natural join ".TourSection::TOUR_TABLE." WHERE ts_id = ?";
         $stmt = $pdo->prepare($sql);
@@ -125,6 +125,11 @@ class TourSection
     public function setEndDate(DateTime $end_date): void
     {
         $this->end_date = $end_date;
+    }
+
+    public function __toString()
+    {
+        return "TourSection: ".$this->getTsId()." ".$this->getPlace()." ".$this->getType()." ".$this->getStartDate()->format('Y-m-d')." ".$this->getEndDate()->format('Y-m-d');
     }
 
 }
