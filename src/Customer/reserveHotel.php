@@ -27,7 +27,8 @@ AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected')
 GROUP BY hotel.h_id";
 if (isset($_POST['filterHotels'])) {
     $name = $_POST['name'];
-    $sql .= "AND hotel.name LIKE '%$name%';";
+    $string = "AND hotel.name LIKE '%$name%'";
+    $sql = substr_replace ( $sql , $string , '160' , 0 );
 }
 
 if (isset($_POST['clearFilter'])) {
