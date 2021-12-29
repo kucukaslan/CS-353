@@ -4,7 +4,7 @@
 require_once(__DIR__."/../session.php");
 require_once("../config.php");
 require_once(getRootDirectory()."/util/navbar.php");
-if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
+if(isset($_SESSION['id']) && strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
 ?>
@@ -34,27 +34,48 @@ if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     <p> 
     <?php
 
-    echo "sorry WIP!<br>";
+//    echo "sorry WIP!<br>";
 
+    // read the post array, refresh page with get request
     if($_SERVER['REQUEST_METHOD'] == "POST") {
-        var_dump($_POST);
-    }
+        $_SESSION['op'] = $_POST['op'];
+        $_SESSION['ts_id'] = $_POST['ts_id'];
+        // clear the request
+        unset($_POST);
+        header("Location: "); 
+   }
     else if ($_SERVER['REQUEST_METHOD'] == "GET") { 
-        if (isset($_GET['op'])) {
-            $op = $_GET['op'];
+        if (isset($_SESSION['op'])) {
+            $op = $_SESSION['op'];
+            unset($_SESSION['op']);
             if ($op == "details") {
+                
                 header("location: details", true, 301);
             }
             else if ($op == "feedback") {
-                header("location: details", true, 301);
+                header("location: feedback", true, 301);
             }
         }
     }
         ?>    
 </p>
 
-    <h3>Your tours</h3>
+    <h1>Your tours</h1>
     <?php
+        echo '<h2 class="display-4">Current and Upcoming tours</h2>';
+
+        $sql = "SELECT tour_section.ts_id, tour.type, start_date, end_date
+        FROM tour_section  NATURAL JOIN tour NATURAL JOIN guides NATURAL JOIN tour_guide
+        WHERE  end_date > NOW() AND guides.status = 'approved'  
+        AND guides.tg_id = ${_SESSION['id']}";
+
+        $result = mysqli_query($db, $sql);
+    
+        if(mysqli_num_rows($result) > 0) {
+            printTourTable($result);
+        }
+
+        echo '<h2 class="display-4">Previous tours</h2>';
         $sql = "SELECT tour_section.ts_id, tour.type, start_date, end_date
         FROM tour_section  NATURAL JOIN tour NATURAL JOIN guides NATURAL JOIN tour_guide
         WHERE  end_date < NOW() 
@@ -63,8 +84,16 @@ if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
         $result = mysqli_query($db, $sql);
     
         if(mysqli_num_rows($result) > 0) {
+            printTourTable($result);
+        }
+        else {
+            echo "No tours available!";
+        }
+
+
+        function printTourTable($result) {
             // print table of tours
-            echo "<table style=\"width:80%\" align='center'>";
+            echo "<table style=\"width:80%\" class=\"table\" align='center'>";
             echo "<tr >"
                 . "<th> Section Id" . "</th>"
                 . "<th> Tour Name" . "</th>"
@@ -94,10 +123,7 @@ if(strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
                 echo "</tr>";
             }
              echo "</table>";
-        }
-        else {
-            echo "No tours available!";
-        }
+        } 
     ?>
 
 </body>
