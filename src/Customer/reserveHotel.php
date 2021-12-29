@@ -25,15 +25,29 @@ FROM hotel, room
 WHERE room.h_id = hotel.h_id
 AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected')
 GROUP BY hotel.h_id";
-$availableHotels = $db->query($sql);
 
-$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
+
+$sql2 = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
 FROM booking, hotel, room
 WHERE booking.r_id= room.r_id 
 AND room.h_id = hotel.h_id 
 AND c_id = $cid 
 AND status = 'pending'";
-$pendingHotels = $db->query($sql);
+
+if (isset($_POST['filterHotels'])) {
+    $name = $_POST['name'];
+    $sql .= "AND hotel.name LIKE '%$name%';";
+    $sql2 .= "AND hotel.name LIKE '%$name%';";
+}
+
+if (isset($_POST['clearFilter'])) {
+    $name = $_POST['name'];
+    str_replace("AND hotel.name LIKE '%$name%';", "", $sql);
+    str_replace("AND hotel.name LIKE '%$name%';", "", $sql2);
+}
+
+$availableHotels = $db->query($sql);
+$pendingHotels = $db->query($sql2);
 
 if (isset($_POST['BookDetails'])) {
     $bookId = $_POST['bookId'];
@@ -49,15 +63,7 @@ if (isset($_POST['CancelBook']))
 }
 
 
-if (isset($_POST['filterHotels'])) {
-    $name = $_POST['name'];
-    $sql .= "AND hotel.name LIKE '%$name%';";
-}
 
-if (isset($_POST['clearFilter'])) {
-    $name = $_POST['name'];
-    str_replace("AND hotel.name LIKE '%$name%';", "", $sql);
-}
 
 ?>
 
