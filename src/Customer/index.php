@@ -8,7 +8,8 @@ FROM tour_section, reservation, guides, tour, tour_guide
 WHERE tour.t_id = tour_section.t_id 
 AND reservation.ts_id = tour_section.ts_id 
 AND guides.tg_id = tour_guide.tg_id 
-AND guides.ts_id = tour_section.ts_id 
+AND guides.ts_id = tour_section.ts_id
+AND guides.status = 'approved'
 AND reservation.status = 'approved' 
 AND tour_section.end_date > NOW()
 AND reservation.c_id = $cid ";
@@ -89,7 +90,6 @@ if (isset($_POST['CancelBook']))
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
                         <?php
                         $todayDate = date('Y-m-d');
-                        // echo $row['start_date'];
                         if ($row['start_date'] > $todayDate)
                         {
                             echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"

@@ -17,10 +17,48 @@ if (isset($_POST['ReserveTour'])) {
         echo '<script>alert("You Have To Reserve For 1 or More People")</script>';
     } else {
         $sql = "INSERT INTO reservation (c_id, ts_id, e_id, number, status, isRated, reason) VALUES ($cid, $ts_id, null, $number, 'pending', 'no', null)";
-        echo $sql;
         $db->query($sql);
     }
 }
+
+if (isset($_POST['ResDetails'])) {
+    $resId = $_POST['resId'];
+    header("location: reservationDetails.php?resId=$resId");
+}
+
+if (isset($_POST['CancelRes'])) 
+{
+    $res_id = $_POST['resId'];
+    $sql = "DELETE FROM reservation WHERE res_id = $res_id";
+    $db->query($sql);
+    header("Refresh:0");
+}
+
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+FROM tour_section, reservation, guides, tour, tour_guide 
+WHERE tour.t_id = tour_section.t_id 
+AND reservation.ts_id = tour_section.ts_id 
+AND guides.tg_id = tour_guide.tg_id 
+AND guides.ts_id = tour_section.ts_id 
+AND guides.status = 'approved'
+AND reservation.status = 'pending' 
+AND tour_section.start_date > NOW()
+AND reservation.c_id = $cid ";
+
+$resultTourPending = $db->query($sql);
+
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+FROM tour_section, reservation, guides, tour, tour_guide 
+WHERE tour.t_id = tour_section.t_id 
+AND reservation.ts_id = tour_section.ts_id 
+AND guides.tg_id = tour_guide.tg_id 
+AND guides.ts_id = tour_section.ts_id
+AND guides.status = 'approved'
+AND reservation.status = 'approved' 
+AND tour_section.end_date > NOW()
+AND reservation.c_id = $cid ";
+
+$resultTourReserved = $db->query($sql);
 
 $sql = "SELECT tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, tour_guide.tg_id, tour_section.ts_id
 FROM tour_section, guides, tour_guide, tour
@@ -31,7 +69,8 @@ AND guides.status = 'approved'
 AND tour_section.start_date > NOW()
 AND tour_section.ts_id NOT IN (SELECT reservation.ts_id
 FROM reservation 
-WHERE reservation.c_id = $cid)";
+WHERE reservation.c_id = $cid
+AND (reservation.status = 'approved' OR reservation.status = 'pending'))";
 
 if (isset($_POST['filterTours'])) {
     $start = $_POST['tour-start'];
@@ -86,6 +125,83 @@ $resultTour = $db->query($sql);
         <button class="btn btn-primary" type="submit" name="filterTours">Filter</button>
         <button class="btn btn-warning" type="submit" name="clearFilter">Clear Filter</button>
     </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Tour Name</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Tour Guide Name</th>
+                <th scope="col">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <h3>Pending Tours</h3>
+            <?php while ($row = $resultTourPending->fetch_assoc()) : ?>
+            <tr id=<?php $row['res_id'] ?>>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td>
+                    <form method="post" action="bookTour.php">
+                        <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
+                        <?php
+                        $todayDate = date('Y-m-d');
+                        if ($row['start_date'] > $todayDate)
+                        {
+                            echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
+                            class="btn btn-warning" type="submit" name="CancelRes">Cancel Reservation</button>';
+                        }
+                         ?>
+                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
+                    </form>
+                </td>
+
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Tour Name</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Tour Guide Name</th>
+                <th scope="col">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <h3>Reserved Tours</h3>
+            <?php while ($row = $resultTourReserved->fetch_assoc()) : ?>
+            <tr id=<?php $row['res_id'] ?>>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td>
+                    <form method="post" action="bookTour.php">
+                        <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
+                        <?php
+                        $todayDate = date('Y-m-d');
+                        if ($row['start_date'] > $todayDate)
+                        {
+                            echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
+                            class="btn btn-warning" type="submit" name="CancelRes">Cancel Reservation</button>';
+                        }
+                         ?>
+                        <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
+                    </form>
+                </td>
+
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+
+
     <table class="table">
         <thead>
             <tr>

@@ -37,9 +37,7 @@ if (isset($_POST['cancelEvent'])) {
 }
 if (isset($_POST['reserveEvent'])) {
     $activityId = $_POST['activityId'];
-    // echo "Reserved event $activityId with Reservation $resId";
     $sql = "INSERT INTO reservation_activity VALUES ($resId, $activityId)";
-    echo $sql;
     $db->query($sql);
     header("Refresh:0");
 }
