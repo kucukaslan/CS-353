@@ -47,6 +47,18 @@ if (isset($_POST['CancelBook']))
     $db->query($sql);
     header("Refresh:0");
 }
+
+
+if (isset($_POST['filterHotels'])) {
+    $name = $_POST['name'];
+    $sql .= "AND hotel.name LIKE '%$name%';";
+}
+
+if (isset($_POST['clearFilter'])) {
+    $name = $_POST['name'];
+    str_replace("AND hotel.name LIKE '%$name%';", "", $sql);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +87,15 @@ if (isset($_POST['CancelBook']))
         </form>
     </div>
     <!-- End of Navbar -->
+    <br>
+    <form method="post" action="reserveHotel.php">
+        <label for="name">Hotel Name:</label>
+        <input type="text" id="name" name="name">
+
+        <button class="btn btn-primary" type="submit" name="filterHotels">Filter</button>
+        <button class="btn btn-warning" type="submit" name="clearFilter">Clear Filter</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>
