@@ -127,6 +127,12 @@ class TourSection
         $this->end_date = $end_date;
     }
 
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->getType();
+    }
     public function __toString()
     {
         return "TourSection: ".$this->getTsId()." ".$this->getPlace()." ".$this->getType()." ".$this->getStartDate()->format('Y-m-d')." ".$this->getEndDate()->format('Y-m-d');
