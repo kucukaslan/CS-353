@@ -15,7 +15,8 @@ if (isset($_POST['submitrate'])) {
 
     $sql = "INSERT INTO customer_review (tour_rate, tour_comment, guide_rate, guide_comment, c_id, ts_id) VALUES ($tourrating, '$tourcommentarea', $tgrating, '$tgreviewarea', $cid, $tsId) ";
     $db->query($sql);
-
+    $sql = "UPDATE reservation SET isSet = 'yes' WHERE res_id = $resId";
+    $db->query($sql);
     header("location: pastTours.php?tsId=$tsId&resId=$resId");
 }
 
