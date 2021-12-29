@@ -4,28 +4,35 @@ require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
 $resId = $_GET['resId'];
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type FROM reservation_activity, activity
-WHERE reservation_activity.a_id = activity.a_id AND
-res_id = $resId AND activity.type = 'basic'";
+$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type
+FROM tour_activity, activity, reservation
+WHERE tour_activity.ts_id = reservation.ts_id
+AND tour_activity.a_id = activity.a_id
+AND reservation.res_id = $resId
+AND tour_activity.type = 'basic'";
 $resultBasic = $db -> query($sql);
 
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type 
-FROM reservation_activity, activity
-WHERE reservation_activity.a_id = activity.a_id AND
-res_id = $resId AND activity.type = 'extra'
+$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type 
+FROM reservation_activity, activity, tour_activity
+WHERE reservation_activity.a_id = activity.a_id
+AND tour_activity.a_id = activity.a_id
+AND res_id = $resId
+AND tour_activity.type = 'extra'
 ORDER BY activity.date, activity.start_time";
 $resultExtraReserved = $db -> query($sql);
 
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, activity.type
+$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type
 FROM tour_activity, reservation, activity
 WHERE reservation.ts_id = tour_activity.ts_id
 AND activity.a_id = tour_activity.a_id
-AND type = 'extra'
+AND tour_activity.type = 'extra'
 AND reservation.res_id = $resId
 AND activity.a_id NOT IN (SELECT activity.a_id
-FROM reservation_activity, activity
-WHERE reservation_activity.a_id = activity.a_id AND
-res_id = $resId AND activity.type = 'extra')
+FROM reservation_activity, activity, tour_activity
+WHERE reservation_activity.a_id = activity.a_id
+AND tour_activity.a_id = activity.a_id
+AND res_id = $resId
+AND tour_activity.type = 'extra')
 ORDER BY activity.date, activity.start_time";
 $resultExtraNotReserved = $db -> query($sql);
 

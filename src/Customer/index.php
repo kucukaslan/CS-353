@@ -34,7 +34,7 @@ FROM booking, hotel, room
 WHERE booking.r_id= room.r_id 
 AND room.h_id = hotel.h_id 
 AND c_id = $cid 
-AND status = 'accepted'";
+AND status = 'approved'";
 
 $resultHotel = $db->query($sql);
 

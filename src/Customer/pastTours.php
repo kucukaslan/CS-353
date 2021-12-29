@@ -22,6 +22,7 @@ WHERE tour.t_id = tour_section.t_id
 AND reservation.ts_id = tour_section.ts_id 
 AND guides.tg_id = tour_guide.tg_id 
 AND guides.ts_id = tour_section.ts_id 
+AND guides.status = 'approved'
 AND reservation.status = 'approved' 
 AND tour_section.end_date < NOW()
 AND reservation.c_id = $cid ";

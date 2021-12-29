@@ -23,9 +23,30 @@ if (isset($_POST['Reserveroom'])) {
 $sql = "SELECT hotel.name, hotel.city, hotel.address, hotel.phone, hotel.rating, hotel.h_id, COUNT(room.r_id) as roomC
 FROM hotel, room 
 WHERE room.h_id = hotel.h_id
+AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected')
 GROUP BY hotel.h_id";
+$availableHotels = $db->query($sql);
 
-$resultTour = $db->query($sql);
+$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
+FROM booking, hotel, room
+WHERE booking.r_id= room.r_id 
+AND room.h_id = hotel.h_id 
+AND c_id = $cid 
+AND status = 'pending'";
+$pendingHotels = $db->query($sql);
+
+if (isset($_POST['BookDetails'])) {
+    $bookId = $_POST['bookId'];
+    header("location: bookingDetails.php?bookId=$bookId");
+}
+
+if (isset($_POST['CancelBook'])) 
+{
+    $b_id = $_POST['bookId'];
+    $sql = "DELETE FROM booking WHERE b_id = $b_id";
+    $db->query($sql);
+    header("Refresh:0");
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +75,37 @@ $resultTour = $db->query($sql);
         </form>
     </div>
     <!-- End of Navbar -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Hotel Name</th>
+                <th scope="col">Room Type</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <h3> Pending Hotel Reservations </h3>
+            <?php while ($row = $pendingHotels->fetch_assoc()) : ?>
+            <tr id=<?php $row['b_id'] ?>>
+                <td> <?php echo $row['name'] ?> </td>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['start_date'] ?> </td>
+                <td> <?php echo $row['end_date'] ?> </td>
+                <td>
+                    <form method="post" action="reserveHotel.php"> <button class="btn btn-primary" type="submit"
+                            name="BookDetails">Details</button> <button
+                            onclick="return  confirm('Are You Sure You Want To Delete This Booking Y/N')"
+                            class="btn btn-warning" type="submit" name="CancelBook">Cancel
+                            Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
+                    </form>
+                </td>
+
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
     <br>
     <table class="table">
         <thead>
@@ -63,7 +115,7 @@ $resultTour = $db->query($sql);
                 <th scope="col">Address</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Rating</th>
-                <th scope="col">Number of Available Rooms</th>
+                <th scope="col"># of Available Rooms</th>
                 <th scope="col">Room Number</th>
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
@@ -72,7 +124,7 @@ $resultTour = $db->query($sql);
         </thead>
         <tbody>
             <h3> Available Hotels </h3>
-            <?php while ($row = $resultTour->fetch_assoc()) : ?>
+            <?php while ($row = $availableHotels->fetch_assoc()) : ?>
                 <tr id=<?php $row['h_id'] ?>>
                     <td> <?php echo $row['name'] ?> </td>
                     <td> <?php echo $row['city'] ?> </td>
@@ -84,12 +136,12 @@ $resultTour = $db->query($sql);
                         <td>
                             <?php
                             $hotelID = $row['h_id'];
-                            $sql = "SELECT room.type, room.r_id FROM hotel, room WHERE room.h_id = hotel.h_id AND hotel.h_id = $hotelID";
+                            $sql = "SELECT room.type, room.price, room.capacity, room.r_id FROM hotel, room WHERE room.h_id = hotel.h_id AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected') AND hotel.h_id = $hotelID";
                             $resultRooms = $db->query($sql);
                             ?>
                             <select name="rooms" id="rooms">
                                 <?php while ($roomRow = $resultRooms->fetch_assoc()) : ?>
-                                    <option value=<?php echo $roomRow['r_id'] ?>><?php echo $roomRow['type'] ?></option>
+                                    <option value=<?php echo $roomRow['r_id'] ?>><?php echo $roomRow['type']. " - " .$roomRow['capacity'] . " Person - ". $roomRow['price']. "$" ?></option>
                                 <?php endwhile; ?>
                             </select>
                         </td>
