@@ -1,9 +1,20 @@
 <?php
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
-
     
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+    $h_id = $_POST['hotel_id'];
+    $room_price = $_POST['room_price'];
+    $room_capacity = $_POST['room_capacity'];
+    $room_type = $_POST['room_type'];
 
+    $sql = "INSERT INTO `room` (`h_id`, `price`, `capacity`, `type`, `r_id`) VALUES ($h_id, $room_price, $room_capacity, '$room_type', NULL)";
+    $result = $result = $db->query($sql);
+}
+
+$sql = "SELECT `h_id` FROM `hotel` ";
+$result = $result = $db->query($sql);
 ?>
 
 
@@ -44,32 +55,34 @@ div {
 </style>
 <body>
 
-<h3>Create a Tour</h3>
+<h3>Register a room</h3>
 
 <div>
   <form name="form" action="" method="post">
-    <label for="fname">Hotel name</label>
-    <input type="text" id="hotel_name" name="hotel_name" placeholder="Your name.." required="true">
-
-    <label for="fname">Hotel phone</label>
-    <input type="text" id="hotel_phone" name="hotel_phone" placeholder="Your name.." required="true">
-
-    <label for="fname">Hotel city</label>
-    <input type="text" id="hotel_city" name="hotel_city" placeholder="Your name.." required="true">
-
-
-    <label for="fname">Hotel address</label>
-    <input type="text" id="hotel_address" name="hotel_address" placeholder="Your name.." required="true">
-
-    <label for="fname">Hotel stars</label>
-    <select name="hotel_stars" id="hotel_stars">
-        <option value=0>0</option>
-        <option value=1>1</option>
-        <option value=2>2</option>
-        <option value=3>3</option>
-        <option value=4>4</option>
-        <option value=5>5</option>
+    <label for="fname">Hotel id</label>
+    <select name="hotel_id" id="hotel_id">
+    <?php
+        while ($row = $result->fetch_assoc())
+        {
+            $h_id = $row['h_id'];
+            echo "<option value=$h_id>$h_id</option>";
+        }   
+    ?>
+     
       </select>
+
+
+    <label for="fname">price</label>
+    <input type="text" id="room_price" name="room_price" placeholder="price.." required="true">
+
+    <label for="fname">capacity</label>
+    <input type="text" id="room_capacity" name="room_capacity" placeholder="capacity.." required="true">
+
+
+    <label for="fname">type</label>
+    <input type="text" id="room_type" name="room_type" placeholder="type.." required="true">
+
+    
   
     <input type="submit" value="Submit">
   </form>

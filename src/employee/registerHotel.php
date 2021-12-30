@@ -76,7 +76,7 @@ div {
 </style>
 <body>
 
-<h3>Create a Tour</h3>
+<h3>Register a hotel</h3>
 
 <div>
   <form name="form" action="" method="post">
