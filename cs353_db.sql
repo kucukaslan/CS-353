@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 30, 2021 at 02:10 PM
+-- Generation Time: Dec 30, 2021 at 02:38 PM
 -- Server version: 5.5.68-MariaDB
 -- PHP Version: 5.6.40
 
@@ -89,18 +89,19 @@ CREATE TABLE `booking` (
   `end_date` date NOT NULL,
   `type` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `status` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
-  `reason` varchar(500) COLLATE utf16_turkish_ci DEFAULT NULL
+  `reason` varchar(500) COLLATE utf16_turkish_ci DEFAULT NULL,
+  `bill` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`b_id`, `c_id`, `r_id`, `e_id`, `start_date`, `end_date`, `type`, `status`, `reason`) VALUES
-(13, 28, 4, NULL, '2021-12-30', '2022-01-04', 'online', 'rejected', NULL),
-(15, 28, 3, NULL, '2022-01-04', '2022-01-07', 'online', 'pending', NULL),
-(18, 28, 2, NULL, '2022-01-04', '2022-01-07', 'online', 'rejected', NULL),
-(19, 1, 1, NULL, '2021-12-30', '2021-12-31', 'online', 'pending', NULL);
+INSERT INTO `booking` (`b_id`, `c_id`, `r_id`, `e_id`, `start_date`, `end_date`, `type`, `status`, `reason`, `bill`) VALUES
+(13, 28, 4, NULL, '2021-12-30', '2022-01-04', 'online', 'rejected', NULL, '0.00'),
+(15, 28, 3, NULL, '2022-01-04', '2022-01-07', 'online', 'pending', NULL, '0.00'),
+(18, 28, 2, NULL, '2022-01-04', '2022-01-07', 'online', 'rejected', NULL, '0.00'),
+(19, 1, 1, NULL, '2021-12-30', '2021-12-31', 'online', 'pending', NULL, '0.00');
 
 -- --------------------------------------------------------
 
@@ -193,17 +194,18 @@ CREATE TABLE `flight_reservation` (
   `f_id` int(11) NOT NULL,
   `c_id` int(11) NOT NULL,
   `number_of_passengers` int(11) NOT NULL,
-  `date` date NOT NULL
+  `date` date NOT NULL,
+  `bill` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
 -- Dumping data for table `flight_reservation`
 --
 
-INSERT INTO `flight_reservation` (`fr_id`, `f_id`, `c_id`, `number_of_passengers`, `date`) VALUES
-(1, 1, 28, 1, '0000-00-00'),
-(3, 1, 28, 10, '0000-00-00'),
-(4, 2, 28, 3, '2022-01-10');
+INSERT INTO `flight_reservation` (`fr_id`, `f_id`, `c_id`, `number_of_passengers`, `date`, `bill`) VALUES
+(1, 1, 28, 1, '0000-00-00', '0.00'),
+(3, 1, 28, 10, '0000-00-00', '0.00'),
+(4, 2, 28, 3, '2022-01-10', '0.00');
 
 -- --------------------------------------------------------
 
@@ -269,16 +271,17 @@ CREATE TABLE `reservation` (
   `number` int(11) NOT NULL,
   `status` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `isRated` varchar(3) COLLATE utf16_turkish_ci DEFAULT NULL,
-  `reason` varchar(500) COLLATE utf16_turkish_ci DEFAULT NULL
+  `reason` varchar(500) COLLATE utf16_turkish_ci DEFAULT NULL,
+  `bill` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
 -- Dumping data for table `reservation`
 --
 
-INSERT INTO `reservation` (`res_id`, `c_id`, `ts_id`, `e_id`, `number`, `status`, `isRated`, `reason`) VALUES
-(10, 28, 4, 11, 3, 'approved', 'yes', NULL),
-(34, 28, 3, NULL, 3, 'approved', 'no', NULL);
+INSERT INTO `reservation` (`res_id`, `c_id`, `ts_id`, `e_id`, `number`, `status`, `isRated`, `reason`, `bill`) VALUES
+(10, 28, 4, 11, 3, 'approved', 'yes', NULL, '0.00'),
+(34, 28, 3, NULL, 3, 'approved', 'no', NULL, '0.00');
 
 -- --------------------------------------------------------
 
@@ -330,6 +333,7 @@ CREATE TABLE `thecustomer` (
   `lastname` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
   `email` varchar(190) COLLATE utf16_turkish_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf16_turkish_ci NOT NULL,
+  `wallet` decimal(15,2) NOT NULL DEFAULT '0.00',
   `birthday` date NOT NULL,
   `profile_picture` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
@@ -338,11 +342,11 @@ CREATE TABLE `thecustomer` (
 -- Dumping data for table `thecustomer`
 --
 
-INSERT INTO `thecustomer` (`c_id`, `name`, `lastname`, `email`, `password_hash`, `birthday`, `profile_picture`) VALUES
-(1, '1', '1', '1@1', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '2002-05-04', NULL),
-(26, 'Mehmet', 'Kck', 'a@a', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '2021-12-09', NULL),
-(27, 'a', 'a', 'v@a', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '2021-12-09', NULL),
-(28, 'Guven', 'Gergerli', '123@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '2000-03-13', NULL);
+INSERT INTO `thecustomer` (`c_id`, `name`, `lastname`, `email`, `password_hash`, `wallet`, `birthday`, `profile_picture`) VALUES
+(1, '1', '1', '1@1', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '0.00', '2002-05-04', NULL),
+(26, 'Mehmet', 'Kck', 'a@a', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '0.00', '2021-12-09', NULL),
+(27, 'a', 'a', 'v@a', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '0.00', '2021-12-09', NULL),
+(28, 'Guven', 'Gergerli', '123@gmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', '0.00', '2000-03-13', NULL);
 
 -- --------------------------------------------------------
 
@@ -383,27 +387,28 @@ DROP TABLE IF EXISTS `tour_activity`;
 CREATE TABLE `tour_activity` (
   `ts_id` int(11) NOT NULL,
   `a_id` int(11) NOT NULL,
-  `type` enum('extra','basic') COLLATE utf16_turkish_ci NOT NULL DEFAULT 'basic'
+  `type` enum('extra','basic') COLLATE utf16_turkish_ci NOT NULL DEFAULT 'basic',
+  `cost` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
 -- Dumping data for table `tour_activity`
 --
 
-INSERT INTO `tour_activity` (`ts_id`, `a_id`, `type`) VALUES
-(1, 4, 'extra'),
-(1, 7, 'extra'),
-(3, 5, 'extra'),
-(3, 7, 'extra'),
-(1, 5, 'basic'),
-(1, 6, 'basic'),
-(3, 1, 'basic'),
-(3, 4, 'basic'),
-(3, 6, 'basic'),
-(9, 1, 'basic'),
-(9, 3, 'basic'),
-(9, 4, 'basic'),
-(9, 8, 'basic');
+INSERT INTO `tour_activity` (`ts_id`, `a_id`, `type`, `cost`) VALUES
+(1, 4, 'extra', '10.00'),
+(1, 5, 'basic', '60.00'),
+(1, 6, 'basic', '60.00'),
+(1, 7, 'extra', '20.00'),
+(3, 1, 'basic', '20.00'),
+(3, 4, 'basic', '25.00'),
+(3, 5, 'extra', '25.00'),
+(3, 6, 'basic', '25.00'),
+(3, 7, 'extra', '65.00'),
+(9, 1, 'basic', '15.00'),
+(9, 3, 'basic', '15.00'),
+(9, 4, 'basic', '15.00'),
+(9, 8, 'basic', '15.00');
 
 -- --------------------------------------------------------
 
@@ -464,21 +469,22 @@ CREATE TABLE `tour_section` (
   `ts_id` int(11) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `t_id` int(11) NOT NULL
+  `t_id` int(11) NOT NULL,
+  `cost` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
 -- Dumping data for table `tour_section`
 --
 
-INSERT INTO `tour_section` (`ts_id`, `start_date`, `end_date`, `t_id`) VALUES
-(1, '2021-12-31', '2022-01-05', 2),
-(3, '2021-12-30', '2022-01-12', 3),
-(4, '2023-03-11', '2024-01-13', 3),
-(7, '2021-12-27', '2021-12-29', 8),
-(8, '2021-12-27', '2021-12-30', 9),
-(9, '2022-03-04', '2022-12-07', 2),
-(10, '2021-12-14', '2021-12-23', 11);
+INSERT INTO `tour_section` (`ts_id`, `start_date`, `end_date`, `t_id`, `cost`) VALUES
+(1, '2021-12-31', '2022-01-05', 2, '0.00'),
+(3, '2021-12-30', '2022-01-12', 3, '0.00'),
+(4, '2023-03-11', '2024-01-13', 3, '0.00'),
+(7, '2021-12-27', '2021-12-29', 8, '0.00'),
+(8, '2021-12-27', '2021-12-30', 9, '0.00'),
+(9, '2022-03-04', '2022-12-07', 2, '0.00'),
+(10, '2021-12-14', '2021-12-23', 11, '0.00');
 
 --
 -- Indexes for dumped tables
@@ -734,8 +740,8 @@ ALTER TABLE `flight`
 -- Constraints for table `flight_reservation`
 --
 ALTER TABLE `flight_reservation`
-  ADD CONSTRAINT `fk_fr_flight` FOREIGN KEY (`f_id`) REFERENCES `flight` (`f_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_fr_customer` FOREIGN KEY (`c_id`) REFERENCES `thecustomer` (`c_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_fr_customer` FOREIGN KEY (`c_id`) REFERENCES `thecustomer` (`c_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_fr_flight` FOREIGN KEY (`f_id`) REFERENCES `flight` (`f_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `guides`
