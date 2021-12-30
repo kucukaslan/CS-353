@@ -15,7 +15,7 @@ if (isset($_POST['bookbutton'])) {
 $sql = "SELECT flight.f_id, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity
 FROM flight, airport as dept, airport as dest
 WHERE flight.dept_airport = dept.airport_code
-AND flight.dest_airport = dest.airport_code ORDER BY flight.f_id ";
+AND flight.dest_airport = dest.airport_code ";
 
 if (isset($_POST['filterFlights'])) {
     $arrival = $_POST['arrival'];
