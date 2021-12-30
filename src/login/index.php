@@ -48,7 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 $_SESSION['id'] = $row['e_id'];
                 $_SESSION['type'] = "employee";
-                header("location: ../dashboard/dashboardE.php");
+                //header("location: ../dashboard/dashboardE.php");
+                header("location: ../employee/index.php");
             } else if ($userType == 'tour_guide') 
             {
                 $_SESSION['id'] = $row['tg_id'];
