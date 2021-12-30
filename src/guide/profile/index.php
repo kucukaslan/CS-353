@@ -27,12 +27,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     <?php
         echo getGuideNavBar("../");
     ?>
-    <!-- First four lines are invisible they're behind the navbar!-->
-    <br>
-    <br>
-    <br>
-    <br>
-
     <h2> Profile</h2>
 </body>
 

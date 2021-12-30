@@ -24,12 +24,6 @@ if(isset($_SESSION['id']) && strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION
     <?php
         echo getGuideNavBar("./");
     ?>
-    <!-- First four lines are invisible they're behind the navbar!-->
-    <br>
-    <br>
-    <br>
-    <br>
-
     <h2>Hello guide <?php echo "${_SESSION['name']} ${_SESSION['lastname']} "?> </h2>
     <p> 
     <?php
