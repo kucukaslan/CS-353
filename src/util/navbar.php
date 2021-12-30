@@ -1,5 +1,4 @@
 <?php
-
     function getGuideNavBar(string $relative_path) : string {
         $navbar = '<!-- Beginning of Navbar -->
         <nav class="navbar navbar-default navbar-fixed-top">
