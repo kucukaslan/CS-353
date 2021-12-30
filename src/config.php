@@ -11,7 +11,7 @@
    }
 
    function getDatabaseConnection() : PDO {
-      $conn = new PDO("mysql:host=dijkstra.ug.bcc.bilkent.edu.tr;dbname=".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+      $conn = new PDO("mysql:host=dijkstra.ug.bcc.bilkent.edu.tr;dbname=".DB_DATABASE.";charset=utf8mb4", DB_USERNAME, DB_PASSWORD);
       $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       return $conn;
    }

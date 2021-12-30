@@ -1,8 +1,7 @@
 <?php
 
     function getGuideNavBar(string $relative_path) : string {
-        $navbar = '<!-- Beginning of Navbar -->
-        <nav class="navbar navbar-default navbar-fixed-top">
+        $navbar = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resNav">
                     <span class="icon-bar"></span>
@@ -20,8 +19,8 @@
     
                 <ul class="nav navbar-nav navbar-right">
                     <div>
-                        <form action="'.$relative_path.'availabletours" method="post">
-                            <input type="submit" name="availabletours" class="btn btn-primary" value="Available Tours" />
+                        <form action="'.$relative_path.'offeredtours" method="post">
+                            <input type="submit" name="offeredtours" class="btn btn-primary" value="Offered Tours" />
                         </form>
                     </div>    
                 </ul>
@@ -37,8 +36,7 @@
     
             </div>
     
-        </nav>
-        <!-- End of Navbar -->';
+        </nav>';
         return $navbar;
     }
     function getCustomerNav () : string {
