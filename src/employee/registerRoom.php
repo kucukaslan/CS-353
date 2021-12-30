@@ -2,41 +2,9 @@
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') 
-{
-    /*
-    $x = $_POST['hotel_phone'];
-    $y = $_POST['hotel_stars'];
-    echo $x;
-    echo $y;
     
-    echo "\n";
-    echo " evet" .is_string($x);
-    echo " hayir" .is_int($y);
-    */
-    if (isset($_POST['hotel_name'])) //create hotel
-    {
-        $hotel_name = $_POST['hotel_name'];
-        $hotel_phone = $_POST['hotel_phone'];
-        $hotel_city = $_POST['hotel_city'];
-        $hotel_address = $_POST['hotel_address'];
-        $hotel_stars= $_POST['hotel_stars'];
-
-
-        $sql = "INSERT INTO `hotel` (`h_id`, `phone`, `name`, `city`, `address`, `rating`)
-         VALUES (NULL, $hotel_phone, '$hotel_name', '$hotel_city', '$hotel_address', $hotel_stars)";
-    
-        $result = $db->query($sql);
-    }
-    else //direct user to the adding a new room page
-    {
-
-    }
-}
 
 ?>
-
 
 
 

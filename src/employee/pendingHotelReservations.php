@@ -2,7 +2,8 @@
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 
-$sql = "SELECT hotel.name, booking.start_date, booking.end_date, hotel.address, booking.r_id, thecustomer.c_id, thecustomer.name, booking.b_id
+$sql = "SELECT hotel.name as hotel_name, booking.start_date, booking.end_date, hotel.address, booking.r_id, thecustomer.c_id, thecustomer.name, booking.b_id,
+room.capacity, room.r_id, room.type
 FROM booking, hotel, room, thecustomer
 WHERE
 booking.r_id = room.r_id AND
@@ -43,8 +44,9 @@ $resultPendingHotelReservations = $db->query($sql);
                 <th scope="col">Hotel Location</th>
                 <th scope="col">start date</th>
                 <th scope="col">end date</th>
-                <th scope="col">number of available rooms</th>
+                <th scope="col">room capacity</th>
                 <th scope="col">room number</th>
+                <th scope="col">type</th>
                 <th scope="col">customer name</th>
             </tr>
         </thead>
@@ -52,12 +54,34 @@ $resultPendingHotelReservations = $db->query($sql);
             <h3> Pending hotel reservations </h3>
             <?php while ($row = $resultPendingHotelReservations->fetch_assoc()) : ?>
             <tr id=<?php $row['b_id'] ?>>
-                <td> <?php echo $row['name'] ?> </td>
+                <td> <?php echo $row['hotel_name'] ?> </td>
                 <td> <?php echo $row['address'] ?> </td>
                 <td> <?php echo $row['start_date'] ?> </td>
                 <td> <?php echo $row['end_date']  ?> </td>
-                
+                <td> <?php echo $row['capacity']  ?> </td>
+                <td> <?php echo $row['r_id']  ?> </td>
+                <td> <?php echo $row['type']  ?> </td>
+                <td> <?php echo $row['name']  ?> </td>
 
+                <td><form action="createNewExtraActivity.php" method="post" id="form1">
+                    <button class="btn btn-primary" type="submit" name="ResDetails">accept</button>                    
+                    <input type="hidden" name="ts_id" value=""
+                    </form></td>
+
+                <td> <form action="createNewExtraActivity.php" method="post" id="form1">
+                    <button class="btn btn-primary" type="submit" name="ResDetails">decline</button>                    
+                    <input type="hidden" name="ts_id" value=""
+                    </form></td>
+
+                <td><form action="createNewExtraActivity.php" method="post" id="form1">
+                    <button class="btn btn-primary" type="submit" name="ResDetails">details</button>                    
+                    <input type="hidden" name="ts_id" value=""
+                    </form></td>
+
+
+                
+                   
+                    
             </tr>
             <?php endwhile; ?>
         </tbody>
