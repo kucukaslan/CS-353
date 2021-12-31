@@ -52,17 +52,46 @@ $sql = "SELECT hotel.name, hotel.city, hotel.address, hotel.phone, hotel.rating,
 FROM hotel, room 
 WHERE room.h_id = hotel.h_id
 AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected')
-GROUP BY hotel.h_id";
+";
+
 if (isset($_POST['filterHotels'])) {
     $name = $_POST['name'];
-    $string = "AND hotel.name LIKE '%$name%'";
-    $sql = substr_replace ( $sql , $string , '160' , 0 );
-}
+    $minRating = $_POST['minRating'];
+    $maxRating = $_POST['maxRating'];
 
+    if ($minRating == "")
+    {
+        $minRating = 1;
+    }
+    if ($maxRating == "")
+    {
+        $maxRating = 5;
+    }
+
+    if ($minRating > $maxRating)
+    {
+        echo '<script>alert("Minimum Rating Cannot Be Less Than Maximum Rating")</script>';
+    }
+    else if ($minRating < 1 || $maxRating < 1 || $maxRating > 5)
+    {
+        echo '<script>alert("Either maximum Rating or minimum Rating is out of range\n1- 1 <= Minimum Rating <= Maximum Rating\n2- Minimum Rating <= Maximum Rating <= 5")</script>';
+    }
+    else
+    {
+        $string = "AND hotel.city LIKE '%$name%' AND hotel.rating BETWEEN $minRating AND $maxRating";
+        $sql .= $string;
+    }
+    
+}
 if (isset($_POST['clearFilter'])) {
     $name = $_POST['name'];
-    str_replace("AND hotel.name LIKE '%$name%';", "", $sql);
+    $minRating = $_POST['minRating'];
+    $maxRating = $_POST['maxRating'];
+
+    str_replace("AND hotel.city LIKE '%$name%' AND hotel.rating BETWEEN $minRating AND $maxRating';", "", $sql);
 }
+
+$sql .= " GROUP BY hotel.h_id";
 $availableHotels = $db->query($sql);
 
 $sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone, booking.status, booking.reason, booking.bill
@@ -109,10 +138,6 @@ if (isset($_POST['CancelBook']))
     $db->query($sql);
     header("Refresh:0");
 }
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -196,12 +221,22 @@ if (isset($_POST['CancelBook']))
     </table>
     <hr class="rounded">
     <form method="post" action="reserveHotel.php">
-        <label for="name">Hotel Name:</label>
+    <label for="minRating">Minimum Rating :</label>
+        <input type="number" id="name" name="minRating">
+
+        <label for="maxRating">Maximum Rating :</label>
+        <input type="number" id="name" name="maxRating">
+
+        <!-- <button class="btn btn-primary" type="submit" name="filterHotelsByRating">Filter</button>
+        <button class="btn btn-warning" type="submit" name="clearFilterRating">Clear Filter</button> -->
+
+        <label for="name">City :</label>
         <input type="text" id="name" name="name">
 
         <button class="btn btn-primary" type="submit" name="filterHotels">Filter</button>
         <button class="btn btn-warning" type="submit" name="clearFilter">Clear Filter</button>
     </form>
+    
     <table class="table">
         <thead>
             <tr>
