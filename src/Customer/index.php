@@ -3,6 +3,11 @@ include("../session.php");
 require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
+$sql = "SELECT wallet FROM thecustomer WHERE c_id = $cid";
+$currentWallet = $db->query($sql);
+$row = $currentWallet->fetch_assoc();
+$currentWallet = $row['wallet'];
+
 $sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
 FROM tour_section, reservation, guides, tour, tour_guide 
 WHERE tour.t_id = tour_section.t_id 
@@ -29,16 +34,16 @@ if (isset($_POST['CancelRes']))
     header("Refresh:0");
 }
 
-$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
+$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone, booking.bill
 FROM booking, hotel, room
 WHERE booking.r_id= room.r_id 
 AND room.h_id = hotel.h_id 
-AND c_id = $cid 
-AND status = 'approved'";
+AND booking.c_id = $cid 
+AND booking.status = 'approved'";
 
 $resultHotel = $db->query($sql);
 
-$sql = "SELECT flight.f_id, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity, flight_reservation.fr_id, flight_reservation.number_of_passengers
+$sql = "SELECT flight.f_id, flight_reservation.bill, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity, flight_reservation.fr_id, flight_reservation.number_of_passengers
 FROM flight, airport as dept, airport as dest, flight_reservation
 WHERE flight.f_id = flight_reservation.f_id
 AND flight.dept_airport = dept.airport_code
@@ -54,6 +59,16 @@ if (isset($_POST['BookDetails'])) {
 if (isset($_POST['CancelBook'])) 
 {
     $b_id = $_POST['bookId'];
+
+    $sql = "SELECT bill FROM booking WHERE b_id = $b_id";
+    $roomPrice = $db->query($sql);
+    $roomPrice = $roomPrice->fetch_assoc();
+    $roomPrice = $roomPrice['bill'];
+
+    $newWallet = $currentWallet + $roomPrice;
+    $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+    $db->query($sql);
+
     $sql = "DELETE FROM booking WHERE b_id = $b_id";
     $db->query($sql);
     header("Refresh:0");
@@ -62,6 +77,16 @@ if (isset($_POST['CancelBook']))
 if (isset($_POST['CancelFlight']))
 {
     $frid = $_POST['flightresId'];
+
+    $sql = "SELECT bill FROM flight_reservation WHERE fr_id = $frid";
+    $flightPrice = $db->query($sql);
+    $flightPrice = $flightPrice->fetch_assoc();
+    $flightPrice = $flightPrice['bill'];
+
+    $newWallet = $currentWallet + $flightPrice;
+    $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+    $db->query($sql);
+
     $sql = "DELETE FROM flight_reservation WHERE fr_id = $frid";
     $db->query($sql);
     header("Refresh:0");
@@ -83,6 +108,7 @@ if (isset($_POST['CancelFlight']))
     <?php
         echo getCustomerNav("./");
     ?>
+    <h2 style="background-color:powderblue; border-radius:7px; width:25%; font-family:courier;">Wallet: <?php echo $currentWallet?>$</h2>
     <br>
     <table class="table">
         <thead>
@@ -132,6 +158,7 @@ if (isset($_POST['CancelFlight']))
             <th scope="col">Room Type</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
+            <th scope="col">Total Cost</th>
             <th scope="col">Options</th>
         </tr>
         </thead>
@@ -143,6 +170,7 @@ if (isset($_POST['CancelFlight']))
                 <td> <?php echo $row['type'] ?> </td>
                 <td> <?php echo $row['start_date'] ?> </td>
                 <td> <?php echo $row['end_date'] ?> </td>
+                <td> <?php echo $row['bill'] ?> </td>
                 <td>
                     <form method="post" action="index.php"> <button class="btn btn-primary" type="submit"
                                                                     name="BookDetails">Details</button> <button
@@ -172,6 +200,7 @@ if (isset($_POST['CancelFlight']))
             <th scope="col">Arrives on</th>
             <th scope="col">Capacity</th>
             <th scope="col">Number of Passengers</th>
+            <th scope="col">Total Cost</th>
             <th scope="col">Options</th>
         </tr>
         </thead>
@@ -188,6 +217,7 @@ if (isset($_POST['CancelFlight']))
                 <td> <?php echo $row['arrive_date'] ?> </td>
                 <td> <?php echo $row['capacity'] ?> </td>
                 <td> <?php echo $row['number_of_passengers'] ?> </td>
+                <td> <?php echo $row['bill'] ?> </td>
                 <td>
                     <form method="post" action="index.php"> <button
                                 onclick="return  confirm('Are You Sure You Want To Delete This Flight Y/N')"

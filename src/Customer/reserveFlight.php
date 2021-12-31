@@ -2,13 +2,37 @@
 include("../session.php");
 $cid = $_SESSION['id'];
 
+$sql = "SELECT wallet FROM thecustomer WHERE c_id = $cid";
+$currentWallet = $db->query($sql);
+$row = $currentWallet->fetch_assoc();
+$currentWallet = $row['wallet'];
+
 if (isset($_POST['bookbutton'])) {
     $fid = $_POST['fid'];
     $numofpass = $_POST['numofpass'];
     $date = $_POST['date'];
+    $ticketPrice = $_POST['ticketPrice'];
+    $totalCost = $ticketPrice * $numofpass;
 
-    $sql = "INSERT INTO flight_reservation (f_id, c_id, number_of_passengers, date) VALUES ($fid, $cid, $numofpass, '$date') ";
-    $db->query($sql);
+    if ($currentWallet < $totalCost)
+    {
+        echo '<script>alert("You Dont Have Enough Money To Reserve These Tickets")</script>';
+    }
+    else
+    {
+        $newWallet = $currentWallet - $totalCost;
+        $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+        $db->query($sql);
+        
+    
+        $sql = "INSERT INTO flight_reservation (f_id, c_id, number_of_passengers, date, bill) VALUES ($fid, $cid, $numofpass, '$date', $totalCost) ";
+        $db->query($sql);
+
+        header("Refresh:0");
+    }
+
+
+    
 }
 
 
@@ -57,6 +81,7 @@ $resultTour = $db -> query($sql);
         <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
     </form>
 </div>
+<h2 style="background-color:powderblue; border-radius:7px; width:25%; font-family:courier;">Wallet: <?php echo $currentWallet?>$</h2>
 <!-- End of Navbar -->
 <br>
 <form method="post" action="reserveFlight.php">
@@ -108,6 +133,7 @@ $resultTour = $db -> query($sql);
 
                     <input type="hidden" name="fid" value="<?php echo $row['f_id']; ?>">
                     <input type="hidden" name="date" value="<?php echo $row['dept_date']; ?>">
+                    <input type="hidden" name="ticketPrice" value="<?php echo $row['ticket_price']; ?>">
                 </td>
             </form>
         </tr>

@@ -2,22 +2,50 @@
 include("../session.php");
 $cid = $_SESSION['id'];
 
+$sql = "SELECT wallet FROM thecustomer WHERE c_id = $cid";
+$currentWallet = $db->query($sql);
+$row = $currentWallet->fetch_assoc();
+$currentWallet = $row['wallet'];
+
 if (isset($_POST['Reserveroom'])) {
     $rid = $_POST['rooms'];
     $startdate = $_POST['startdate'];
     $enddate = $_POST['enddate'];
     $today = date('Y-m-d');
 
-    if (empty((int)$startdate) || empty((int)$enddate)) {
-        echo "<script>alert('Starting Date and End Date Cannot Be Empty, Room Has Not Been Reserved')</script>";
-    } else if ($startdate < $today || $enddate < $today) {
-        echo "<script>alert('End Date and/or Start Date Cannot Be Earlier Than Today, Room Has Not Been Reserved')</script>";
-    } else if ($startdate > $enddate) {
-        echo "<script>alert('End Date Cannot Be Earlier Than Start Date, Room Has Not Been Reserved')</script>";
-    } else {
-        $sql = "INSERT INTO booking (c_id, r_id, e_id, start_date, end_date, type, status) VALUES ($cid, $rid, NULL, '$startdate', '$enddate', 'online', 'pending') ";
-        $db->query($sql);
+    $sql = "SELECT room.price FROM room WHERE r_id = $rid";
+    $roomPrice = $db -> query($sql);
+    $row = $roomPrice->fetch_assoc();
+    $roomPrice = $row['price'];
+
+    $datediff = strtotime($enddate) - strtotime($startdate);
+    $numberOfDays = round($datediff / (60 * 60 * 24));
+    $roomPrice = $roomPrice * $numberOfDays;
+    
+    if ($currentWallet < $roomPrice)
+    {
+        echo '<script>alert("You Dont Have Enough Money To Reserve This Room")</script>';
     }
+    else
+    {
+        if (empty((int)$startdate) || empty((int)$enddate)) {
+            echo "<script>alert('Starting Date and End Date Cannot Be Empty, Room Has Not Been Reserved')</script>";
+        } else if ($startdate < $today || $enddate < $today) {
+            echo "<script>alert('End Date and/or Start Date Cannot Be Earlier Than Today, Room Has Not Been Reserved')</script>";
+        } else if ($startdate >= $enddate) {
+            echo "<script>alert('End Date Must Be Later Than Start Date, Room Has Not Been Reserved')</script>";
+        } else {
+            $sql = "INSERT INTO booking (c_id, r_id, e_id, start_date, end_date, type, status, bill) VALUES ($cid, $rid, NULL, '$startdate', '$enddate', 'online', 'pending', $roomPrice) ";
+            $db->query($sql);
+
+            $newWallet = $currentWallet - $roomPrice;
+            $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+            $db->query($sql);
+            header("Refresh:0");
+        }
+    }
+
+    
 }
 
 $sql = "SELECT hotel.name, hotel.city, hotel.address, hotel.phone, hotel.rating, hotel.h_id, COUNT(room.r_id) as roomC
@@ -37,25 +65,46 @@ if (isset($_POST['clearFilter'])) {
 }
 $availableHotels = $db->query($sql);
 
-$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone
+$sql = "SELECT booking.b_id, booking.start_date, booking.end_date, room.type, hotel.name, hotel.city, hotel.address, hotel.phone, booking.status, booking.reason, booking.bill
 FROM booking, hotel, room
 WHERE booking.r_id= room.r_id 
 AND room.h_id = hotel.h_id 
 AND c_id = $cid 
-AND status = 'pending'";
+AND status != 'approved'
+ORDER BY status";
 
 $pendingHotels = $db->query($sql);
 
 
 
 if (isset($_POST['BookDetails'])) {
+    $status = $_POST['status'];
     $bookId = $_POST['bookId'];
-    header("location: bookingDetails.php?bookId=$bookId");
+    if ($status == 'rejected')
+    {
+        $sql = "DELETE FROM booking WHERE b_id = $bookId";
+        $db -> query($sql);
+        header("Refresh:0");
+    }
+    else
+    {
+        header("location: bookingDetails.php?bookId=$bookId");
+    }
+    
 }
 
 if (isset($_POST['CancelBook'])) 
 {
     $b_id = $_POST['bookId'];
+    $sql = "SELECT bill FROM booking WHERE b_id = $b_id";
+    $roomPrice = $db->query($sql);
+    $roomPrice = $roomPrice->fetch_assoc();
+    $roomPrice = $roomPrice['bill'];
+
+    $newWallet = $currentWallet + $roomPrice;
+    $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+    $db->query($sql);
+    
     $sql = "DELETE FROM booking WHERE b_id = $b_id";
     $db->query($sql);
     header("Refresh:0");
@@ -92,7 +141,8 @@ if (isset($_POST['CancelBook']))
         </form>
     </div>
     <!-- End of Navbar -->
-
+    <h2 style="background-color:powderblue; border-radius:7px; width:25%; font-family:courier;">Wallet:
+        <?php echo $currentWallet?>$</h2>
 
     <table class="table">
         <thead>
@@ -101,23 +151,42 @@ if (isset($_POST['CancelBook']))
                 <th scope="col">Room Type</th>
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Total Cost</th>
                 <th scope="col">Options</th>
+                <th scope="col">Reason For Rejection (If Applicable)</th>
             </tr>
         </thead>
         <tbody>
-            <h3> Pending Hotel Reservations </h3>
+            <h3> Unapproved Reservations </h3>
             <?php while ($row = $pendingHotels->fetch_assoc()) : ?>
             <tr id=<?php $row['b_id'] ?>>
                 <td> <?php echo $row['name'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
                 <td> <?php echo $row['start_date'] ?> </td>
                 <td> <?php echo $row['end_date'] ?> </td>
+                <td> <b> <?php echo $row['status'] ?> </b> </td>
+                <td> <?php echo $row['bill'] ?>$ </td>
                 <td>
-                    <form method="post" action="reserveHotel.php"> <button class="btn btn-primary" type="submit"
-                            name="BookDetails">Details</button> <button
-                            onclick="return  confirm('Are You Sure You Want To Delete This Booking Y/N')"
-                            class="btn btn-warning" type="submit" name="CancelBook">Cancel
-                            Booking</button> <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
+                    <form method="post" action="reserveHotel.php">
+                    <?php
+                        if ($row['status'] == 'rejected')
+                        {
+                            $reason = $row['reason'];
+                            echo '<button class="btn btn-danger" type="submit" name="BookDetails">Delete</button>
+                            <td>' .$reason. '</td>';
+                        }
+                        else
+                        {
+                            echo '<button class="btn btn-primary" type="submit" name="BookDetails">Details</button>
+                            <button onclick="return  confirm(\'Are You Sure You Want To Delete This Booking Y/N\')"
+                            class="btn btn-warning" type="submit" name="CancelBook">Cancel Booking</button>';
+                            
+                        }                        
+                        ?>
+                        <input type="hidden" name="bookId" value="<?php echo $row['b_id']; ?>">
+                        <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
+                        <input type="hidden" name="reason" value="<?php echo $row['reason']; ?>">
                     </form>
                 </td>
 
@@ -151,40 +220,46 @@ if (isset($_POST['CancelBook']))
         <tbody>
             <h3> Available Hotels </h3>
             <?php while ($row = $availableHotels->fetch_assoc()) : ?>
-                <tr id=<?php $row['h_id'] ?>>
-                    <td> <?php echo $row['name'] ?> </td>
-                    <td> <?php echo $row['city'] ?> </td>
-                    <td> <?php echo $row['address'] ?> </td>
-                    <td> <?php echo $row['phone'] ?> </td>
-                    <td> <?php echo $row['rating'] ?> </td>
-                    <td> <?php echo $row['roomC'] ?></td>
-                    <form method="post" action="reserveHotel.php">
-                        <td>
-                            <?php
+            <tr id=<?php $row['h_id'] ?>>
+                <td> <?php echo $row['name'] ?> </td>
+                <td> <?php echo $row['city'] ?> </td>
+                <td> <?php echo $row['address'] ?> </td>
+                <td> <?php echo $row['phone'] ?> </td>
+                <td> <?php echo $row['rating'] ?> </td>
+                <td> <?php echo $row['roomC'] ?></td>
+                <form method="post" action="reserveHotel.php">
+                    <td>
+                        <?php
                             $hotelID = $row['h_id'];
                             $sql = "SELECT room.type, room.price, room.capacity, room.r_id FROM hotel, room WHERE room.h_id = hotel.h_id AND room.r_id NOT IN (SELECT r_id from booking WHERE status != 'rejected') AND hotel.h_id = $hotelID";
                             $resultRooms = $db->query($sql);
                             ?>
-                            <select name="rooms" id="rooms">
-                                <?php while ($roomRow = $resultRooms->fetch_assoc()) : ?>
-                                    <option value=<?php echo $roomRow['r_id'] ?>><?php echo $roomRow['type']. " - " .$roomRow['capacity'] . " Person - ". $roomRow['price']. "$" ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="date" id="startdate" name="startdate">
-                        </td>
-                        <td>
-                            <input type="date" id="enddate" name="enddate">
-                        </td>
-                        <td>
-                            <button onclick="return  confirm('Are You Sure You Want To Reserve This Room Y/N')" class="btn btn-primary" type="submit" name="Reserveroom">Reserve Room</button>
+                        <select name="rooms" id="rooms">
+                            <?php while ($roomRow = $resultRooms->fetch_assoc()) : ?>
+                            <option value=<?php echo $roomRow['r_id'] ?>>
+                                <?php echo $roomRow['type']. " - " .$roomRow['capacity'] . " Person - ". $roomRow['price']. "$ Per Night" ?>
+                            </option>
+                            
+                            <?php endwhile; ?>
+                        </select>
+                        
+                    </td>
+                    <td>
+                        <input type="date" id="startdate" name="startdate">
+                    </td>
+                    <td>
+                        <input type="date" id="enddate" name="enddate">
+                    </td>
+                    <td>
+                        <button onclick="return  confirm('Are You Sure You Want To Reserve This Room Y/N')"
+                            class="btn btn-primary" type="submit" name="Reserveroom">Reserve Room</button>
 
-                            <input type="hidden" name="resId" value="<?php echo $rr[$i]['h_id']; ?>">
+                        <input type="hidden" name="resId" value="<?php echo $rr[$i]['h_id']; ?>">
+                        
 
-                        </td>
-                    </form>
-                </tr>
+                    </td>
+                </form>
+            </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
