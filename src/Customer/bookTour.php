@@ -130,7 +130,7 @@ $resultTour = $db->query($sql);
 </head>
 
 <body>
-<h2>The Amount of Money You Currently Have is <?php echo $currentWallet?>$</h2>
+
     <div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">
         <a href="../customer">Home</a>
         <a href="reserveFlight.php">Reserve a Flight</a>
@@ -143,7 +143,7 @@ $resultTour = $db->query($sql);
         </form>
     </div>
     <!-- End of Navbar -->
-    
+    <h2 style="background-color:powderblue; border-radius:7px; width:25%; font-family:courier;">Wallet: <?php echo $currentWallet?>$</h2>
     <br>
     <form method="post" action="bookTour.php">
         <label for="start">Start date:</label>

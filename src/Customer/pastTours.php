@@ -3,8 +3,8 @@ include("../session.php");
 $cid = $_SESSION['id'];
 
 if (isset($_POST['TourDetails'])) {
-    $resId = $_POST['resId'];
-    header("location: reservationDetails.php?resId=$resId");
+    $tsId = $_POST['tsId'];
+    header("location: tourDetails.php?tsId=$tsId");
 }
 if (isset($_POST['TGProfile'])) {
     $tgId = $_POST['tgId'];

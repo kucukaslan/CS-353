@@ -3,16 +3,22 @@ include("../session.php");
 require_once(getRootDirectory()."/util/navbar.php");
 $cid = $_SESSION['id'];
 
+$sql = "SELECT wallet FROM thecustomer WHERE c_id = $cid";
+$currentWallet = $db->query($sql);
+$row = $currentWallet->fetch_assoc();
+$currentWallet = $row['wallet'];
+
 $resId = $_GET['resId'];
 $sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type
 FROM tour_activity, activity, reservation
 WHERE tour_activity.ts_id = reservation.ts_id
 AND tour_activity.a_id = activity.a_id
 AND reservation.res_id = $resId
-AND tour_activity.type = 'basic'";
+AND tour_activity.type = 'basic'
+ORDER BY activity.date, activity.start_time";
 $resultBasic = $db -> query($sql);
 
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type 
+$sql = "SELECT activity.a_id, tour_activity.cost, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type 
 FROM reservation_activity, activity, tour_activity
 WHERE reservation_activity.a_id = activity.a_id
 AND tour_activity.a_id = activity.a_id
@@ -21,7 +27,7 @@ AND tour_activity.type = 'extra'
 ORDER BY activity.date, activity.start_time";
 $resultExtraReserved = $db -> query($sql);
 
-$sql = "SELECT activity.a_id, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type
+$sql = "SELECT activity.a_id, tour_activity.cost, activity.name, activity.location, activity.date, activity.start_time, activity.end_time, tour_activity.type
 FROM tour_activity, reservation, activity
 WHERE reservation.ts_id = tour_activity.ts_id
 AND activity.a_id = tour_activity.a_id
@@ -65,6 +71,7 @@ if (isset($_POST['reserveEvent'])) {
     <?php
         echo getCustomerNav("./");
     ?>
+    <h2 style="background-color:powderblue; border-radius:7px; width:25%; font-family:courier;">Wallet: <?php echo $currentWallet?>$</h2>
     <br>
 
     <h3>The Activities For Current Tour</h3>
@@ -77,6 +84,7 @@ if (isset($_POST['reserveEvent'])) {
                 <th scope="col">Date</th>
                 <th scope="col">Time</th>
                 <th scope="col">Type</th>
+                <th scope="col">Extra Cost</th>
                 <th scope="col">Options</th>
             </tr>
         </thead>
@@ -89,6 +97,7 @@ if (isset($_POST['reserveEvent'])) {
                 <td> <?php echo $row['date'] ?> </td>
                 <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['cost'] ?> </td>
                 <td>
 
                     <form method="post" action="reservationDetails.php?resId=<?php echo $resId?>">
@@ -114,6 +123,7 @@ if (isset($_POST['reserveEvent'])) {
                 <td> <?php echo $row['date'] ?> </td>
                 <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['cost'] ?> </td>
                 <td>
 
                     <form method="post" action="reservationDetails.php?resId=<?php echo $resId?>"><button class="btn btn-info" type="submit"
@@ -132,6 +142,7 @@ if (isset($_POST['reserveEvent'])) {
                 <td> <?php echo $row['date'] ?> </td>
                 <td> <?php echo $row['start_time']. " - " . $row['end_time'] ?> </td>
                 <td> <?php echo $row['type'] ?> </td>
+                <td> None </td>
                 <td>
             </tr>
             <?php endwhile; ?>
