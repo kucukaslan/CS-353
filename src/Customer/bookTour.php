@@ -63,14 +63,14 @@ if (isset($_POST['CancelRes']))
     header("Refresh:0");
 }
 
-$sql = "SELECT reservation.res_id, tour_section.ts_id, tour_section.cost, reservation.bill, reservation.number, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+$sql = "SELECT reservation.res_id, tour_section.ts_id, tour_section.cost, reservation.bill, reservation.number, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, reservation.status, reservation.reason
 FROM tour_section, reservation, guides, tour, tour_guide 
 WHERE tour.t_id = tour_section.t_id 
 AND reservation.ts_id = tour_section.ts_id 
 AND guides.tg_id = tour_guide.tg_id 
 AND guides.ts_id = tour_section.ts_id 
 AND guides.status = 'approved'
-AND reservation.status = 'pending' 
+AND (reservation.status = 'pending' OR reservation.status = 'rejected') 
 AND tour_section.start_date > NOW()
 AND reservation.c_id = $cid ";
 
@@ -111,6 +111,14 @@ if (isset($_POST['clearFilter'])) {
     $start = $_POST['tour-start'];
     $end = $_POST['tour-end'];
     str_replace("AND tour_section.start_date >= '$start' AND tour_section.end_date <= '$end'", "", $sql);
+}
+
+if (isset($_POST['deleteRej']))
+{
+    $res_id = $_POST['resId'];
+    $sql = "DELETE FROM reservation WHERE res_id = $res_id";
+    $db ->query($sql);
+    header("Refresh:0");
 }
 
 $resultTour = $db->query($sql);
@@ -162,10 +170,11 @@ $resultTour = $db->query($sql);
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
                 <th scope="col">Tour Guide Name</th>
-                <th scope="col">Price Per Person</th>
                 <th scope="col"># of People</th>
                 <th scope="col">Total Cost</th>
+                <th scope="col">Status</th>
                 <th scope="col">Options</th>
+                <th scope="col">Rejection Reason (If Applicable)</th>
             </tr>
         </thead>
         <tbody>
@@ -176,23 +185,38 @@ $resultTour = $db->query($sql);
                 <td> <?php echo $row['start_date'] ?> </td>
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
-                <td> <?php echo $row['cost']?> </td>
                 <td> <?php echo $row['number']?> </td>
                 <td> <?php echo $row['bill']?> </td>
+                <td> <?php echo $row['status']?> </td>
                 <td>
                     <form method="post" action="bookTour.php">
                         <button class="btn btn-primary" type="submit" name="TourDetails">Details</button>
-                        <?php
-                        $todayDate = date('Y-m-d');
-                        if ($row['start_date'] > $todayDate)
+                        <form method="post" action="reserveHotel.php">
+                    <?php
+                        if ($row['status'] == 'rejected')
                         {
-                            echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
-                            class="btn btn-warning" type="submit" name="CancelRes">Cancel Reservation</button>';
+                            $reason = $row['reason'];
+                            echo '<button class="btn btn-danger" type="submit" name="deleteRej">Delete</button>
+                            <td>' .$reason. '</td>';
                         }
-                         ?>
+                        else
+                        {
+                            $todayDate = date('Y-m-d');
+                            if ($row['start_date'] > $todayDate)
+                            {
+                                echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
+                                class="btn btn-warning" type="submit" name="CancelRes">Cancel Reservation</button>';
+                            }
+                            
+                        }                        
+                        ?>
                         <input type="hidden" name="resId" value="<?php echo $row['res_id']; ?>">
                         <input type="hidden" name="tsId" value="<?php echo $row['ts_id']; ?>">
+                        <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
+                        <input type="hidden" name="reason" value="<?php echo $row['reason']; ?>">
                     </form>
+                    </form>
+                    
                 </td>
 
             </tr>
