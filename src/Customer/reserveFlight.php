@@ -12,34 +12,42 @@ if (isset($_POST['bookbutton'])) {
     $numofpass = $_POST['numofpass'];
     $date = $_POST['date'];
     $ticketPrice = $_POST['ticketPrice'];
+    if ($numofpass == "")
+    {
+        $numofpass = 0;
+    }
     $totalCost = $ticketPrice * $numofpass;
+    $remainingCapacity = getFlightCapacity($fid, $db);
 
-    if ($currentWallet < $totalCost)
+    if ($numofpass < 1)
+    {
+        echo '<script>alert("You Must Book For 1 or More People")</script>';;
+    }
+    else if ($currentWallet < $totalCost)
     {
         echo '<script>alert("You Dont Have Enough Money To Reserve These Tickets")</script>';
+    }
+    else if ($numofpass > $remainingCapacity)
+    {
+        echo '<script>alert("There Are No Enough Seats")</script>';
     }
     else
     {
         $newWallet = $currentWallet - $totalCost;
         $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
         $db->query($sql);
-        
     
         $sql = "INSERT INTO flight_reservation (f_id, c_id, number_of_passengers, date, bill) VALUES ($fid, $cid, $numofpass, '$date', $totalCost) ";
         $db->query($sql);
 
         header("Refresh:0");
-    }
-
-
-    
+    }  
 }
-
 
 $sql = "SELECT flight.f_id, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity
 FROM flight, airport as dept, airport as dest
 WHERE flight.dept_airport = dept.airport_code
-AND flight.dest_airport = dest.airport_code ";
+AND flight.dest_airport = dest.airport_code";
 
 if (isset($_POST['filterFlights'])) {
     $arrival = $_POST['arrival'];
@@ -54,6 +62,21 @@ if (isset($_POST['clearFilter'])) {
 }
 
 $resultTour = $db -> query($sql);
+
+function getFlightCapacity($flightId, $db) : int {
+ $sql = "SELECT capacity FROM flight WHERE f_id=$flightId";
+    $baseCapacity = $db->query($sql);
+    $baseCapacity = $baseCapacity->fetch_assoc();
+    $baseCapacity = $baseCapacity['capacity'];
+
+    $sql = "SELECT SUM(number_of_passengers) AS sum FROM flight_reservation WHERE f_id = $flightId";
+    $reservedSeats = $db->query($sql);
+    $reservedSeats = $reservedSeats->fetch_assoc();
+    $reservedSeats = $reservedSeats['sum'];
+
+    $remainingCapacity = $baseCapacity - $reservedSeats;
+    return $remainingCapacity;
+}
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +90,8 @@ $resultTour = $db -> query($sql);
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 
 <body>
@@ -104,8 +129,8 @@ $resultTour = $db -> query($sql);
         <th scope="col">Arrival Airport</th>
         <th scope="col">Arrival Location</th>
         <th scope="col">Arrives on</th>
-        <th scope="col">Price Per Person</th>
-        <th scope="col">Capacity</th>
+        <th scope="col">Price/Person</th>
+        <th scope="col">Available Capacity</th>
         <th scope="col">Number of Passengers</th>
         <th scope="col">Options</th>
     </tr>
@@ -122,10 +147,10 @@ $resultTour = $db -> query($sql);
             <td> <?php echo $row['dest_city'] ?> </td>
             <td> <?php echo $row['arrive_date'] ?> </td>
             <td> <?php echo $row['ticket_price'] ?> </td>
-            <td> <?php echo $row['capacity'] ?> </td>
+            <td> <?php echo getFlightCapacity($row['f_id'], $db) ?> </td>
             <form method="post" action="reserveFlight.php">
                 <td>
-                    <input type="text" id="numofpass" name="numofpass">
+                    <input type="number" id="numofpass" name="numofpass">
                 </td>
                 <td>
                     <button onclick="return  confirm('Are You Sure You Want To Reserve This Flight Y/N')"
