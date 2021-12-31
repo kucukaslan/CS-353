@@ -7,6 +7,15 @@ $currentWallet = $db->query($sql);
 $row = $currentWallet->fetch_assoc();
 $currentWallet = $row['wallet'];
 
+function getFlightCapacity($flightId, $db) : int {
+    $sql = "SELECT available_seats FROM flight_capacity WHERE f_id=$flightId";
+       $availableCapacity = $db->query($sql);
+       $availableCapacity = $availableCapacity->fetch_assoc();
+       $availableCapacity = $availableCapacity['available_seats'];
+   
+       return $availableCapacity;
+   }
+
 if (isset($_POST['bookbutton'])) {
     $fid = $_POST['fid'];
     $numofpass = $_POST['numofpass'];
@@ -47,7 +56,7 @@ if (isset($_POST['bookbutton'])) {
 $sql = "SELECT flight.f_id, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity
 FROM flight, airport as dept, airport as dest
 WHERE flight.dept_airport = dept.airport_code
-AND flight.dest_airport = dest.airport_code";
+AND flight.dest_airport = dest.airport_code ";
 
 if (isset($_POST['filterFlights'])) {
     $arrival = $_POST['arrival'];
@@ -63,20 +72,7 @@ if (isset($_POST['clearFilter'])) {
 
 $resultTour = $db -> query($sql);
 
-function getFlightCapacity($flightId, $db) : int {
- $sql = "SELECT capacity FROM flight WHERE f_id=$flightId";
-    $baseCapacity = $db->query($sql);
-    $baseCapacity = $baseCapacity->fetch_assoc();
-    $baseCapacity = $baseCapacity['capacity'];
 
-    $sql = "SELECT SUM(number_of_passengers) AS sum FROM flight_reservation WHERE f_id = $flightId";
-    $reservedSeats = $db->query($sql);
-    $reservedSeats = $reservedSeats->fetch_assoc();
-    $reservedSeats = $reservedSeats['sum'];
-
-    $remainingCapacity = $baseCapacity - $reservedSeats;
-    return $remainingCapacity;
-}
 ?>
 
 <!DOCTYPE html>
