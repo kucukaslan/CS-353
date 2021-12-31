@@ -57,7 +57,7 @@ $resultPendingTours = $db->query($sql);
                 <td>
                     <form method="post" action="">
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
-                        <input type="hidden" name="bellidegil" value="adsdsa">
+                        <input type="hidden" name="ts_id" value="<?php echo  $row['ts_id'] ?>">
                     </form>
                 </td>
 

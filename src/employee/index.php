@@ -90,25 +90,16 @@ if (isset($_POST['CancelBook']))
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
                 <td>
-                    <form method="post" action="index.php">
+                    <form method="post" action="details/index.php">
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
-                        <?php
-                        $todayDate = date('Y-m-d');
-                        if ($row['start_date'] > $todayDate)
-                        {
-                            echo '<button onclick="return  confirm(\'Are You Sure You Want To Delete This Reservation Y/N\')"
-                            class="btn btn-warning" type="submit" name="CancelRes">Cancel Tour</button>';
-                        }
-                         ?>
-                        <input type="hidden" name="resId" value="<?php echo $row['ts_id']; ?>">
+                        <input type="hidden" name="ts_id" value="<?php echo $row['ts_id']; ?>">
                     </form>
                     <?php echo $row['ts_id']; ?>
                     
                     <form action="createNewExtraActivity.php" method="post" id="form1">
-                    <button class="btn btn-primary" type="submit" name="ResDetails">add activity</button>                    
+                    <button class="btn btn-primary" type="submit" name="ResDetails">Add Activity</button>                    
                     <input type="hidden" name="ts_id" value="<?php echo $row['ts_id']; ?>">
                     </form>
-
 
                 </td>
 

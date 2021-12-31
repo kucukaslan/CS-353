@@ -2,6 +2,7 @@
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 //$_POST['tour_name']
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
   if (isset($_POST['ts_id']))
