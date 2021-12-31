@@ -44,18 +44,30 @@ $resultExtraNotReserved = $db -> query($sql);
 
 if (isset($_POST['cancelEvent'])) {
     $activityId = $_POST['details'];
+    $costOfEvent = $_POST['costOfEvent'];
+
+    $newWallet = $currentWallet + $costOfEvent;
+    $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+    $db->query($sql);
+
     $sql = "DELETE FROM reservation_activity WHERE res_id = $resId AND a_id = $activityId";
     $db->query($sql);
+
     header("Refresh:0");
 }
 if (isset($_POST['reserveEvent'])) {
     $activityId = $_POST['activityId'];
+    $costOfEvent = $_POST['costOfEvent'];
+
     $sql = "INSERT INTO reservation_activity VALUES ($resId, $activityId)";
     $db->query($sql);
+
+    $newWallet = $currentWallet - $costOfEvent;
+    $sql = "UPDATE thecustomer SET wallet=$newWallet WHERE c_id=$cid";
+    $db->query($sql);
+
     header("Refresh:0");
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -110,6 +122,7 @@ if (isset($_POST['reserveEvent'])) {
                             name="cancelEvent">Cancel Extra
                             Event</button>'; } ?>
                         <input type="hidden" name="details" value="<?php echo $row['a_id']; ?>">
+                        <input type="hidden" name="costOfEvent" value="<?php echo $row['a_id']; ?>">
                     </form>
 
                 </td>
@@ -129,6 +142,7 @@ if (isset($_POST['reserveEvent'])) {
                     <form method="post" action="reservationDetails.php?resId=<?php echo $resId?>"><button class="btn btn-info" type="submit"
                             name="reserveEvent">Reserve Extra Event</button>
                         <input type="hidden" name="activityId" value="<?php echo $row['a_id']; ?>">
+                        <input type="hidden" name="costOfEvent" value="<?php echo $row['a_id']; ?>">
                     </form>
 
                 </td>

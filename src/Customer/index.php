@@ -8,7 +8,7 @@ $currentWallet = $db->query($sql);
 $row = $currentWallet->fetch_assoc();
 $currentWallet = $row['wallet'];
 
-$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname 
+$sql = "SELECT reservation.res_id, tour.type, tour_section.start_date, tour_section.end_date, tour_guide.name, tour_guide.lastname, reservation.bill
 FROM tour_section, reservation, guides, tour, tour_guide 
 WHERE tour.t_id = tour_section.t_id 
 AND reservation.ts_id = tour_section.ts_id 
@@ -29,6 +29,15 @@ if (isset($_POST['ResDetails'])) {
 if (isset($_POST['CancelRes'])) 
 {
     $res_id = $_POST['resId'];
+
+    $sql = "SELECT bill FROM reservation WHERE res_id=$res_id";
+    $bill = $db->query($sql);
+    $row = $bill->fetch_assoc();
+    $bill = $row['bill'];
+
+    $sql = "UPDATE thecustomer SET wallet = wallet + $bill WHERE c_id=$cid";
+    $db->query($sql);
+
     $sql = "DELETE FROM reservation WHERE res_id = $res_id";
     $db->query($sql);
     header("Refresh:0");
@@ -43,7 +52,7 @@ AND booking.status = 'approved'";
 
 $resultHotel = $db->query($sql);
 
-$sql = "SELECT flight.f_id, flight_reservation.bill, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight.capacity, flight_reservation.fr_id, flight_reservation.number_of_passengers
+$sql = "SELECT flight.f_id, flight_reservation.bill, flight.ticket_price, dept.city as dept_city, dept.name as dept_name, dest.city as dest_city, dest.name as dest_name, flight.dest_airport, flight.dept_date, flight.arrive_date, flight_reservation.fr_id, flight_reservation.number_of_passengers
 FROM flight, airport as dept, airport as dest, flight_reservation
 WHERE flight.f_id = flight_reservation.f_id
 AND flight.dept_airport = dept.airport_code
@@ -117,6 +126,7 @@ if (isset($_POST['CancelFlight']))
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
                 <th scope="col">Tour Guide Name</th>
+                <th scope="col">Total Cost</th>
                 <th scope="col">Options</th>
             </tr>
         </thead>
@@ -128,6 +138,7 @@ if (isset($_POST['CancelFlight']))
                 <td> <?php echo $row['start_date'] ?> </td>
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
+                <td> <?php echo $row['bill'] ?>$ </td>
                 <td>
                     <form method="post" action="index.php">
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
@@ -198,7 +209,6 @@ if (isset($_POST['CancelFlight']))
             <th scope="col">Arrival Airport</th>
             <th scope="col">Arrival Location</th>
             <th scope="col">Arrives on</th>
-            <th scope="col">Capacity</th>
             <th scope="col">Number of Passengers</th>
             <th scope="col">Total Cost</th>
             <th scope="col">Options</th>
@@ -215,7 +225,6 @@ if (isset($_POST['CancelFlight']))
                 <td> <?php echo $row['dest_name'] ?> </td>
                 <td> <?php echo $row['dest_city'] ?> </td>
                 <td> <?php echo $row['arrive_date'] ?> </td>
-                <td> <?php echo $row['capacity'] ?> </td>
                 <td> <?php echo $row['number_of_passengers'] ?> </td>
                 <td> <?php echo $row['bill'] ?> </td>
                 <td>
