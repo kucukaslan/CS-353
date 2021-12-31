@@ -2,48 +2,52 @@
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 
-$sql = "SELECT hotel.name as hotel_name, booking.start_date, booking.end_date, hotel.address, booking.r_id, thecustomer.c_id, thecustomer.name, booking.b_id,
-room.capacity, room.r_id, room.type
-FROM booking, hotel, room, thecustomer
-WHERE
-booking.r_id = room.r_id AND
-hotel.h_id = room.h_id AND
-start_date > NOW() AND
-thecustomer.c_id = booking.c_id AND
-status = 'pending'
-";
-$resultPendingHotelReservations = $db->query($sql);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
     if (isset($_POST['accept']))
     {
         
-        $b_id = $_POST['accept'];
-        $sql = "UPDATE booking SET status = 'approved' WHERE b_id = $b_id";
+        $res_id = $_POST['accept'];
+        $sql = "UPDATE reservation SET status = 'approved' WHERE res_id = $res_id";
         $result = $db->query($sql);
     }
     else if (isset($_POST['decline']))
     {
-        $b_id = $_POST['decline'];
-        $sql = "UPDATE booking SET status = 'rejected' WHERE b_id = $b_id";
+        $res_id = $_POST['decline'];
+        $sql = "UPDATE reservation SET status = 'rejected' WHERE res_id = $res_id";
         $result = $db->query($sql);
 
         $reason = $_POST['reason'];
-        $sql = "UPDATE booking SET reason = '$reason' WHERE b_id = $b_id";
+        $sql = "UPDATE reservation SET reason = '$reason' WHERE res_id = $res_id";
         $result = $db->query($sql);
+
     }
     header("Refresh:0");
 }
 
+
+$sql = "SELECT tour.t_id, tour_section.ts_id, tour.type, thecustomer.c_id, thecustomer.name, reservation.number, reservation.res_id
+FROM tour, tour_section, reservation, thecustomer
+WHERE
+tour_section.t_id = tour.t_id AND
+tour_section.ts_id = reservation.ts_id AND
+start_date > NOW() AND
+thecustomer.c_id = reservation.c_id AND
+status = 'pending'
+";
+$resultWaitingTourReservations = $db->query($sql);
+
 ?>
+
+
 
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>pending tours</title>
+    <title>waiting tour reservations</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -61,45 +65,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Hotel Name</th>
-                <th scope="col">Hotel Location</th>
-                <th scope="col">start date</th>
-                <th scope="col">end date</th>
-                <th scope="col">room capacity</th>
-                <th scope="col">room number</th>
-                <th scope="col">type</th>
-                <th scope="col">customer name</th>
+                <th scope="col">tour id</th>
+                <th scope="col">tour section id</th>
+                <th scope="col">tour type</th>
+                <th scope="col">thecustomer id</th>
+                <th scope="col">thecustomer name</th>
+                <th scope="col">reservation number</th>
             </tr>
         </thead>
         <tbody>
-            <h3> Pending hotel reservations </h3>
-            <?php while ($row = $resultPendingHotelReservations->fetch_assoc()) : ?>
-            <tr id=<?php $row['b_id'] ?>>
-                <td> <?php echo $row['hotel_name'] ?> </td>
-                <td> <?php echo $row['address'] ?> </td>
-                <td> <?php echo $row['start_date'] ?> </td>
-                <td> <?php echo $row['end_date']  ?> </td>
-                <td> <?php echo $row['capacity']  ?> </td>
-                <td> <?php echo $row['r_id']  ?> </td>
-                <td> <?php echo $row['type']  ?> </td>
+            <h3> waiting tour reservation </h3>
+            <?php while ($row = $resultWaitingTourReservations->fetch_assoc()) : ?>
+            <tr id=<?php $row['ts_id'] ?>>
+                <td> <?php echo $row['t_id'] ?> </td>
+                <td> <?php echo $row['ts_id'] ?> </td>
+                <td> <?php echo $row['type'] ?> </td>
+                <td> <?php echo $row['c_id']  ?> </td>
                 <td> <?php echo $row['name']  ?> </td>
-                <td> <?php echo $row['b_id'];  ?> </td>
+                <td> <?php echo $row['number']  ?> </td>
                 
                 <td><form action="" method="post" id="form1">
                     <button class="btn btn-primary" type="submit" name="accept">accept</button>                    
-                    <input type="hidden" name="accept" value= "<?php echo $row['b_id']; ?>">
+                    <input type="hidden" name="accept" value= "<?php echo $row['res_id']; ?>">
                     </form></td>
 
                 <td> <form action="" method="post" id="form1">
                     <button class="btn btn-primary" type="submit" name="decline">decline</button>                    
-                    <input type="hidden" name="decline" value= "<?php echo $row['b_id']; ?>">
+                    <input type="hidden" name="decline" value= "<?php echo $row['res_id']; ?>">
 
                     <label for="fname">reason</label>
                     <input type="text" id="reason" name="reason" placeholder="reason.." required="true">
                     
                     </form></td>
 
-                <td><form action="c" method="post" id="form1">
+                <td><form action="" method="post" id="form1">
                     <button class="btn btn-primary" type="submit" name="ResDetails">details</button>                    
                     <input type="hidden" name="ts_id" value="">
                     </form></td>

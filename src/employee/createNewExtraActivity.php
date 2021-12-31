@@ -85,7 +85,7 @@ div {
 </style>
 <body>
 
-<h3>Create a new extra activity for tour x</h3>
+<h3>Create a new extra activity for tour <?php echo "tour section: " .$_POST['ts_id'];?>  </h3>
 
 <div>
   <form name="form" action="" method="post">

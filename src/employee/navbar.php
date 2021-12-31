@@ -9,9 +9,10 @@
         <a href=pendingHotelReservations.php>Pending Hotel Reservations</a>
         <a href=pendingTours.php>Pending Tours</a>
         <a href=createNewTour.php>Create New Tour</a>
-        <a href=createNewExtraActivity.php>Create New activity</a>
         <a href=registerHotel.php>Register Hotel</a>
         <a href=registerRoom.php>Register Room</a>
+        <a href=makeHotelReservation.php>make a Hotel Reservation</a>
+        <a href=waitingTourReservations.php>waiting tour reservations</a>     
         <a href=profile.php>Profile</a>
         <a href=../logout.php>Log Out</a>
 </p>
