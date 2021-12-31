@@ -1,6 +1,6 @@
 <?php
-require_once(__DIR__."/../../session.php");
-require_once("../../config.php");
+require_once(__DIR__ . "/../session.php");
+require_once("../config.php");
 require_once(getRootDirectory()."/util/navbar.php");
 require_once(getRootDirectory()."/util/TourSection.php");
 require_once(getRootDirectory()."/util/TourSectionActivity.php");
@@ -33,26 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 </head>
 <body>
     <?php
-        echo getEmployeeNavBar("../");
-    ?>
-    <?php
-        $ts_id = $_SESSION['ts_id'];
-        
-        $ts = TourSection::makeTourSection($conn, $ts_id);
+        echo getEmployeeNavBar("./");
 
+        $ts_id = $_SESSION['ts_id'];
+        $ts = TourSection::makeTourSection($conn, $ts_id);
         $act = TourSectionActivity::getActivitiesOfTour($conn,$ts_id);
 
 
         // print the tour details big
-        echo "<h2>Tour Details</h2>";
-        echo "<ul>";
-        echo "<li>Tour ID: ".$ts->getTId()."</li>";
-        echo "<li>Tour Section ID: ".$ts->getTsId()."</li>";
-        echo "<li>Place: ".$ts->getPlace()."</li>";
-        echo "<li>Type: ".$ts->getType()."</li>";
-        echo "<li>Start Date: ".$ts->getStartDate()->format('Y-m-d')."</li>";
-        echo "<li>End Date: ".$ts->getEndDate()->format('Y-m-d')."</li>";
-        echo "</ul>";
+        $ts->printTourDetails();
 
         // print the activities as a list
         echo "<h2>Activities</h2>";
@@ -124,9 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         echo "</tbody>";
         echo "</table>";
-
-
-
         echo "</ul>";
 
 

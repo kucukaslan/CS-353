@@ -31,6 +31,19 @@ class TourSection
         return $ts;
     }
 
+    public function printTourDetails() {
+        // print the tour details big
+        echo "<h2>Tour Details</h2>";
+        echo "<ul>";
+        echo "<li>Tour ID: ".$this->getTId()."</li>";
+        echo "<li>Tour Section ID: ".$this->getTsId()."</li>";
+        echo "<li>Place: ".$this->getPlace()."</li>";
+        echo "<li>Type: ".$this->getType()."</li>";
+        echo "<li>Start Date: ".$this->getStartDate()->format('Y-m-d')."</li>";
+        echo "<li>End Date: ".$this->getEndDate()->format('Y-m-d')."</li>";
+        echo "</ul>";
+    }
+
     /**
      * @return int
      */

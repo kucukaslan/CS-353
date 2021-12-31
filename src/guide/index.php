@@ -73,7 +73,7 @@ if(isset($_SESSION['id']) && strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION
         $sql = "SELECT tour_section.ts_id, tour.type, start_date, end_date
         FROM tour_section  NATURAL JOIN tour NATURAL JOIN guides NATURAL JOIN tour_guide
         WHERE  end_date < NOW() 
-        AND guides.tg_id = ${_SESSION['id']}";
+        AND guides.tg_id = ${_SESSION['id']} AND guides.status = 'accepted'";
 
         $result = mysqli_query($db, $sql);
     
@@ -104,12 +104,12 @@ if(isset($_SESSION['id']) && strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION
                 . "<td>" . $row['start_date'] . "</td>"
                     . "<td>" . $row['end_date'] . "</td>"
                     . "<td></td>"
-                    . "<td><form method=\"post\" action=\"index.php\"> 
+                    . "<td><form method=\"post\" action=\"details.php\"> 
                         <input type=\"hidden\" name=\"op\" value=\"details\">
                         <input type=\"hidden\" name=\"ts_id\" value=" . $row['ts_id'] . ">
                         <input type='submit' class='button_submit' value='Details'></form></td>"
                     ."<td>
-                        <form method=\"post\" action=\"index.php\"> 
+                        <form method=\"post\" action=\"details.php\"> 
                         <input type=\"hidden\" name=\"op\" value=\"feedback\">
                         <input type=\"hidden\" name=\"ts_id\" value=" . $row['ts_id'] . ">
                         <input type='submit' class='button_submit' value='Give Feedback'></form></td>";

@@ -90,7 +90,7 @@ if (isset($_POST['CancelBook']))
                 <td> <?php echo $row['end_date'] ?> </td>
                 <td> <?php echo $row['name'] . " " . $row['lastname'] ?> </td>
                 <td>
-                    <form method="post" action="details/index.php">
+                    <form method="post" action="details.php">
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
                         <input type="hidden" name="ts_id" value="<?php echo $row['ts_id']; ?>">
                     </form>
