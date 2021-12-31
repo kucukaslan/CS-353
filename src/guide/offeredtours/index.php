@@ -118,21 +118,21 @@ function updateTourSectionStatus($db, string $status, $reason = "no reason is st
      . "<td>" . $row['type'] . "</td>"
      . "<td>" . $row['start_date'] . "</td>"
          . "<td>" . $row['end_date'] . "</td>"
-         . ($row['reason'] ? "<td>" . $row['reason'] . "</td>" : "")
+         . (isset($row['reason']) ? "<td>" . $row['reason'] . "</td>" : "")
          . "<td></td>".
-          "<td><form method=\"post\" action=\"index.php\"> 
+          "<td><form method=\"post\" action=''> 
              <input type=\"hidden\" name=\"op\" value=\"details\">
              <input type=\"hidden\" name=\"ts_id\" value=" . $row['ts_id'] . ">
              <input type='submit' class='button_submit' value='Details'></form></td>"
          .
          ($status ?
          "<td>
-             <form method=\"post\" action=\"index.php\"> 
+             <form method=\"post\" action=''> 
              <input type=\"hidden\" name=\"op\" value=\"accept\">
              <input type=\"hidden\" name=\"ts_id\" value=" . $row['ts_id'] . ">
              <input type='submit' class='button_submit' value='Accept'></form></td>"
          ."<td>
-             <form method=\"post\" action=\"index.php\"> 
+             <form method=\"post\" action=''> 
              <input type='text' name='reason' placeholder='Reason if you reject'></textarea></textarea>
              <input type=\"hidden\" name=\"op\" value=\"reject\">
              <input type=\"hidden\" name=\"ts_id\" value=" . $row['ts_id'] . ">

@@ -1,17 +1,24 @@
 <?php
-require_once(__DIR__."/../../session.php");
-require_once("../../config.php");
+require_once(__DIR__ . "/../session.php");
+require_once("../config.php");
 require_once(getRootDirectory()."/util/navbar.php");
 require_once(getRootDirectory()."/util/TourSection.php");
 require_once(getRootDirectory()."/util/TourSectionActivity.php");
 
-if( ! isset($_SESSION['id']) || strcmp("tour_guide", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
+if( ! isset($_SESSION['id']) || strcmp("employee", $_SESSION['type'] ?  $_SESSION['type'] : "none") != 0) {
     header("location: ".getRootDirectory());
 }
 $conn = getDatabaseConnection();
 
-if($_SERVER['REQUEST_METHOD'] == "POST") {
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+  if (isset($_POST['ts_id']))
+  {
+    $_SESSION['ts_id'] = $_POST['ts_id'];
+    unset($_POST['ts_id']);
+    header("refresh:0");
+  }
 }
  ?> 
 <!DOCTYPE html>
@@ -20,27 +27,17 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
   <title>Tour Details</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../../styles/navbar.php">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <!-- Beginning of Navbar -->
     <?php
-        echo getGuideNavBar("../");
-    ?>
-    <!-- End of Navbar -->
-    <!-- First four lines are invisible they're behind the navbar!-->
-    <br>
-    <br>
-    <br>
-    <br>
-    <?php
-        $tour_id = $_SESSION['ts_id'];
-        $ts = TourSection::makeTourSection($conn, $tour_id);
+        echo getEmployeeNavBar("./");
 
-        $act = TourSectionActivity::getActivitiesOfTour($conn,$tour_id);
+        $ts_id = $_SESSION['ts_id'];
+        $ts = TourSection::makeTourSection($conn, $ts_id);
+        $act = TourSectionActivity::getActivitiesOfTour($conn,$ts_id);
 
 
         // print the tour details big
@@ -116,9 +113,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
         echo "</tbody>";
         echo "</table>";
-
-
-
         echo "</ul>";
 
 

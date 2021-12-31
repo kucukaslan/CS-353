@@ -2,6 +2,7 @@
 include("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 //$_POST['tour_name']
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
   if (isset($_POST['ts_id']))
@@ -41,6 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Create new Tour</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../styles/navbar.php">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
 <style>
 input[type=text], select {
   width: 100%;

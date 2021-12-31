@@ -30,14 +30,14 @@
                                 <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
                         </form>
                     </ul>';
-        $navbar .=  navbarItemUL("index.php","index",   "Employee Dashboard");
-        $navbar .=  navbarItemUL("pendingHotelReservations.php","pendingHotelReservations",   "Pending Hotel Reservations");
-        $navbar .=  navbarItemUL("pendingTours.php","pendingTours",   "Pending Tours");
-        $navbar .=  navbarItemUL("createNewTour.php","createNewTour",   "Create New Tour");
-        $navbar .=  navbarItemUL("createNewExtraActivity.php","createNewExtraActivity",   "Create New Extra Activity");
-        $navbar .=  navbarItemUL("registerHotel.php","registerHotel",   "Register Hotel");
-        $navbar .=  navbarItemUL("registerRoom.php","registerRoom",   "Register Room");
-        $navbar .=  navbarItemUL("profile.php","profile",   "Profile");
+        $navbar .=  navbarItemUL($relative_path."index.php","index",   "Employee Dashboard");
+        $navbar .=  navbarItemUL($relative_path."pendingHotelReservations.php","pendingHotelReservations",   "Pending Hotel Reservations");
+        $navbar .=  navbarItemUL($relative_path."pendingTours.php","pendingTours",   "Pending Tours");
+        $navbar .=  navbarItemUL($relative_path."createNewTour.php","createNewTour",   "Create New Tour");
+        $navbar .=  navbarItemUL($relative_path."createNewExtraActivity.php","createNewExtraActivity",   "Create New Extra Activity");
+        $navbar .=  navbarItemUL($relative_path."registerHotel.php","registerHotel",   "Register Hotel");
+        $navbar .=  navbarItemUL($relative_path."registerRoom.php","registerRoom",   "Register Room");
+        $navbar .=  navbarItemUL($relative_path."profile.php","profile",   "Profile");
         $navbar .=  '</div></nav>';
 
        return $navbar;
