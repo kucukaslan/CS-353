@@ -128,7 +128,7 @@ if ($_GET['tgId'] ?? null)
                                 <?php echo $userInfo['email'] ?></span>
                     </h4>
                     <h4>
-                        <div class="text-center mt-3"> <span class="bg-secondary p-1 px-4 rounded text-white">Email:
+                        <div class="text-center mt-3"> <span class="bg-secondary p-1 px-4 rounded text-white">Birthday:
                                 <?php echo $userInfo['birthday'] ?></span>
                     </h4>
                     <form method="post" action="profile.php">
