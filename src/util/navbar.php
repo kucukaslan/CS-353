@@ -43,7 +43,16 @@
        return $navbar;
     }
     function getGuideNavBar(string $relative_path) : string {
-        $navbar = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        $navbar = '<div style="border: 2px solid red; border-radius: 5px;" class="pill-nav">'
+        ."<a href=${relative_path}>Guide Dashboard</a>"
+        ."<a href=${relative_path}offeredtours>Offered Tours</a>"
+        ."<a href=${relative_path}profile>Profile</a>"
+        .'<form action="'.$relative_path.'../logout.php">
+            <input type="submit" name="logout" class="btn btn-danger" value="Logout" />
+        </form> </div>';
+
+        /* '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resNav">
                     <span class="icon-bar"></span>
@@ -79,6 +88,7 @@
             </div>
     
         </nav>';
+        */
         return $navbar;
     }
     function navbarItemUL($path, $name, $text) : string {
