@@ -62,13 +62,15 @@ if( ! isset($_SESSION['id']) && strcmp("admin", $_SESSION['type'] ?  $_SESSION['
                 break;
             }
             echo "<tr>";
-            echo "<td>".$row['city']."</td>";
+            //Flight Depart City	number_of_participants_from_that_city	ts_id	Tour Place	Tour Name	Tour Start Date	Tour End Date
+            echo "<td>".$row['Flight Depart City']."</td>";
             echo "<td>".$row['number_of_participants_from_that_city']."</td>";
-            echo "<td>".$row['place']."</td>";
-            echo "<td>".$row['type']."</td>";
-            echo "<td>".$row['start_date']."</td>";
-            echo "<td>".$row['end_date']."</td>";
+            echo "<td>".$row['Tour Place']."</td>";
+            echo "<td>".$row['Tour Name']."</td>";
+            echo "<td>".$row['Tour Start Date']."</td>";
+            echo "<td>".$row['Tour End Date']."</td>";
             echo "</tr>";
+            
             $i++;
         }
         echo "</tbody>";
