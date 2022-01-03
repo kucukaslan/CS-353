@@ -22,7 +22,7 @@ $sql = "SELECT activity.a_id, tour_activity.cost, activity.name, activity.locati
 FROM reservation_activity, activity, tour_activity
 WHERE reservation_activity.a_id = activity.a_id
 AND tour_activity.a_id = activity.a_id
-AND res_id = $resId
+AND reservation_activity.res_id = $resId
 AND tour_activity.type = 'extra'
 ORDER BY activity.date, activity.start_time";
 $resultExtraReserved = $db -> query($sql);

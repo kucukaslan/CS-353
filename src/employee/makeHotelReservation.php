@@ -22,10 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 
 
-$sql = "SELECT c_id FROM `thecustomer`";
+$sql = "SELECT c_id, name, lastname FROM `thecustomer`";
 $result_customer_list = $db->query($sql);
 
-$sql = "SELECT r_id, capacity FROM `room`";
+$sql = "SELECT r_id, capacity, type FROM `room`";
 $result_room_list = $db->query($sql);
 
 
@@ -82,7 +82,9 @@ input[type=submit]:hover {
     <?php while($row = $result_customer_list->fetch_assoc())
     {
         $x = $row["c_id"];
-        echo "<option value=\"$x\">$x</option>";
+        $name = $row["name"];
+        $lastname = $row["lastname"];
+        echo "<option value=\"$x\">$x - $name $lastname</option>";
     }
          ?>
         
@@ -95,7 +97,8 @@ input[type=submit]:hover {
     {
         $x = $row["r_id"];
         $y = $row['capacity'];
-        echo "<option value=\"$x\">room id: $x capacity: $y</option>";
+        $type = $row['type'];
+        echo "<option value=\"$x\">Room ID: $x Capacity: $y Type: $type</option>";
     }
          ?>
     </select>

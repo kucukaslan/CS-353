@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 
 
-$sql = "SELECT c_id FROM `thecustomer`";
+$sql = "SELECT c_id, name, lastname FROM `thecustomer`";
 $result_customer_list = $db->query($sql);
 
 $sql = "SELECT ts_id, t_id FROM `tour_section`";
@@ -83,7 +83,9 @@ input[type=submit]:hover {
     <?php while($row = $result_customer_list->fetch_assoc())
     {
         $x = $row["c_id"];
-        echo "<option value=\"$x\">$x</option>";
+        $name = $row["name"];
+        $lastname = $row["lastname"];
+        echo "<option value=\"$x\">$x - $name $lastname</option>";
     }
          ?>
         

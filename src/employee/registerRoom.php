@@ -10,10 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $room_type = $_POST['room_type'];
 
     $sql = "INSERT INTO `room` (`h_id`, `price`, `capacity`, `type`, `r_id`) VALUES ($h_id, $room_price, $room_capacity, '$room_type', NULL)";
+    echo $sql;
     $result = $result = $db->query($sql);
 }
 
-$sql = "SELECT `h_id` FROM `hotel` ";
+$sql = "SELECT `h_id`, `name`, `city` FROM `hotel` ";
 $result = $result = $db->query($sql);
 ?>
 
@@ -69,7 +70,9 @@ input[type=submit]:hover {
         while ($row = $result->fetch_assoc())
         {
             $h_id = $row['h_id'];
-            echo "<option value=$h_id>$h_id</option>";
+            $name = $row['name'];
+            $city = $row['city'];
+            echo "<option value=$h_id>$name / $city</option>";
         }   
     ?>
      
@@ -77,10 +80,10 @@ input[type=submit]:hover {
 
 
     <label for="fname">price</label>
-    <input type="text" id="room_price" name="room_price" placeholder="price.." required="true">
+    <input type="number" id="room_price" name="room_price" placeholder="price.." required="true">
 
     <label for="fname">capacity</label>
-    <input type="text" id="room_capacity" name="room_capacity" placeholder="capacity.." required="true">
+    <input type="number" id="room_capacity" name="room_capacity" placeholder="capacity.." required="true">
 
 
     <label for="fname">type</label>

@@ -24,6 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pass = $_POST['password'];
     $passwordHash = hash('sha256', $pass);
     $userType = $_POST['users'];
+    if ($userType == 'admin')
+    {
+        $userType = 'employee';
+    }
 
     $sql = "SELECT * FROM $userType WHERE email = '$email' AND password_hash = '$passwordHash' ";
     $result = mysqli_query($db, $sql);
@@ -56,6 +60,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['type'] = "tour_guide";
                 header("location: ../guide/");
             }
+            else if ($userType == 'admin')
+            {
+                // chnage this to the admin page
+                // header("location: ../employee/index.php");
+            }
         }
     }
 }
@@ -75,6 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <option value="thecustomer">Customer</option>
         <option value="employee">Employee</option>
         <option value="tour_guide">Tour Guide</option>
+        <option value="admin">Admin</option>
     </select>
 
     <div>

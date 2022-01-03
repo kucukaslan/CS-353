@@ -10,6 +10,7 @@
    define('DB_DATABASE', 'cs353');
    */
    $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+   mysqli_set_charset($db, "utf8mb4");
 
    function getRootDirectory() : string {
       return dirname(__FILE__);
