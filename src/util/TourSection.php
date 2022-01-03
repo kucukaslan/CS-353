@@ -5,6 +5,9 @@ class TourSection
 
     const TOUR_SECTION_TABLE = "tour_section";
     const TOUR_TABLE = "tour";
+    const STATUS_APPROVED = "approved";
+    const STATUS_PENDING = "pending";
+    const STATUS_REJECTED = "rejected";
 
     private int $t_id;
     private int $ts_id;
@@ -12,6 +15,7 @@ class TourSection
     private string $type;
     private DateTime $start_date;
     private DateTime $end_date;
+
 
 
     public static function makeTourSection(PDO $pdo, int $ts_id) : TourSection {
@@ -151,4 +155,23 @@ class TourSection
         return "TourSection: ".$this->getTsId()." ".$this->getPlace()." ".$this->getType()." ".$this->getStartDate()->format('Y-m-d')." ".$this->getEndDate()->format('Y-m-d');
     }
 
+    /*
+    * Get the reservation details for this tour section
+     * array of arrays with the following keys:
+     * c_id, res_id, ts_id, number, status, bill, name, lastname, email
+    */
+    public function getReservations(PDO $pdo, $status = null) : ?array {
+        //  c_id 	res_id 	ts_id 	e_id 	number 	status 	isRated 	reason 	bill 	name 	lastname 	email
+        $sql = "SELECT * FROM reservation natural join thecustomer t WHERE ts_id = :ts_id";
+        if ($status != null) {
+            $sql .= " AND status = :status";
+        }
+        $stmt = $pdo->prepare($sql);
+        if($status != null) {
+            $stmt->execute([":ts_id" => $this->getTsId(), ":status" => $status]);
+        } else {
+            $stmt->execute([":ts_id" => $this->getTsId()]);
+        }
+        return $stmt->fetchAll();            
+    }
 }
