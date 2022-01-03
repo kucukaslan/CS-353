@@ -1,5 +1,5 @@
 <?php
-include("../session.php");
+require_once("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
 
 
@@ -77,17 +77,12 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
 </style>
 <body>
 
 <h3>Register a hotel</h3>
 
-<div>
+<div style="border-radius: 5px;  background-color: #f2f2f2;  padding: 20px;">
   <form name="form" action="" method="post">
     <label for="fname">Hotel name</label>
     <input type="text" id="hotel_name" name="hotel_name" placeholder="Your name.." required="true">

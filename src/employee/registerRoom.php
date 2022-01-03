@@ -1,5 +1,5 @@
 <?php
-include("../session.php");
+require_once("../session.php");
 require_once(getRootDirectory()."/employee/navbar.php");
     
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
@@ -56,17 +56,12 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
 </style>
 <body>
 
 <h3>Register a room</h3>
 
-<div>
+<div style="border-radius: 5px;  background-color: #f2f2f2;  padding: 20px;">
   <form name="form" action="" method="post">
     <label for="fname">Hotel id</label>
     <select name="hotel_id" id="hotel_id">

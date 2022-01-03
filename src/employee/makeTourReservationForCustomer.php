@@ -69,17 +69,12 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
 </style>
 <body>
 
 <h3>make a tour reservation for a customer <?php ?>  </h3>
 
-<div>
+<div style="border-radius: 5px;  background-color: #f2f2f2;  padding: 20px;">
   <form name="form" action="" method="post">
 
 

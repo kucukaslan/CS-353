@@ -62,17 +62,12 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
 </style>
 <body>
 
 <h3>Create a Tour</h3>
 
-<div>
+<div style="border-radius: 5px;  background-color: #f2f2f2;  padding: 20px;">
   <form name="form" action="" method="post">
     <label for="fname">Tour Name</label>
     <input type="text" id="tour_name" name="tour_name" placeholder="Your name.." required="true">
