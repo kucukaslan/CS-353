@@ -115,7 +115,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         echo "</table>";
         echo "</ul>";
 
+        
+        // list the pending reservations
+        echo "<h2>Pending Reservations</h2>";
+        echo "<ul>";
+        $pending = $ts->getReservations($conn,TourSection::STATUS_PENDING);
+        // print the pending reservations as a table with approve/reject buttons
+        // columns   res_id ts_id 	e_id 	number 	status 	isRated 	reason 	bill 	name 	lastname 	email
+        echo "<table class='table table-striped'>";
+        echo "<thead>";
+        echo "<tr>";
+        
+        echo "<th>Customer Name</th>";
+        echo "<th>Customer Lastname</th>";
+        echo "<th>Customer Email</th>";
+        echo "<th>Number of People</th>";
+        echo "<th>Approve</th>";
+        echo "<th>Reject</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        foreach($pending as $p) {
+            echo "<tr>";
+            echo "<td>".$p['name']."</td>";
+            echo "<td>".$p['lastname']."</td>";
+            echo "<td>".$p['email']."</td>";
+            echo "<td>".$p['number']."</td>";
+            echo "<td><form action='manageReservation.php' method='post'><input type='hidden' name='res_id' value='".$p['res_id']."'><input type='hidden' name='status' value='".TourSection::STATUS_APPROVED."'><input type='hidden' name='number' value='".$p['number']."'><input type='submit' value='Approve'></form></td>";
+            echo "<td><form action='manageReservation.php' method='post'><input type='hidden' name='res_id' value='".$p['res_id']."'><input type='hidden' name='status' value='".TourSection::STATUS_REJECTED."'><input type='hidden' name='number' value='".$p['number']."'>
+                <input type='text' name='reason' placeholder='Reason if you reject'><input type='submit' value='Reject'></textarea></textarea>
+                </form></td>";
+            echo "</tr>";
+        }
+        echo "</tbody>";
+        echo "</table>";
+        echo "</ul>";
 
+
+
+        // list the approved reservations
+        echo "<h2>Approved Reservations</h2>";
+        echo "<ul>";
+        $approved = $ts->getReservations($conn,TourSection::STATUS_APPROVED);
+        echo "<table class='table table-striped'>";
+        echo "<thead>";
+        echo "<tr>";
+        
+        echo "<th>Customer Name</th>";
+        echo "<th>Customer Lastname</th>";
+        echo "<th>Customer Email</th>";
+        echo "<th>Number of People</th>";
+        echo "<th>Employee id</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        foreach($approved as $p) {
+            echo "<tr>";
+            echo "<td>".$p['name']."</td>";
+            echo "<td>".$p['lastname']."</td>";
+            echo "<td>".$p['email']."</td>";
+            echo "<td>".$p['number']."</td>";
+            echo "<td>".$p['e_id']."</td>";
+            echo "</tr>";
+        }
+        echo "</tbody>";
+        echo "</table>";
+        echo "</ul>";
+
+        // list the rejected reservations
+        echo "<h2>Rejected Reservations</h2>";
+        echo "<ul>";
+        $rejected = $ts->getReservations($conn,TourSection::STATUS_REJECTED);
+        echo "<table class='table table-striped'>";
+        echo "<thead>";
+        echo "<tr>";
+        echo "<th>Customer Name</th>";
+        echo "<th>Customer Lastname</th>";
+        echo "<th>Customer Email</th>";
+        echo "<th>Number of People</th>";
+        echo "<th>Employee id</th>";
+        echo "<th>Reason</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        foreach($rejected as $p) {
+            echo "<tr>";
+            echo "<td>".$p['name']."</td>";
+            echo "<td>".$p['lastname']."</td>";
+            echo "<td>".$p['email']."</td>";
+            echo "<td>".$p['number']."</td>";
+            echo "<td>".$p['e_id']."</td>";
+            echo "<td>".$p['reason']."</td>";
+            echo "</tr>";
+        }
+        echo "</tbody>";
+        echo "</table>";
+        echo "</ul>";       
+    
     ?>
 
 </body>
