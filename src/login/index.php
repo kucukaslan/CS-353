@@ -24,7 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pass = $_POST['password'];
     $passwordHash = hash('sha256', $pass);
     $userType = $_POST['users'];
-    if ($userType == 'admin')
+    $realUserType = $userType;
+    if (strcmp($userType, 'admin') == 0)
     {
         $userType = 'employee';
     }
@@ -43,27 +44,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['lastname'] = $row['lastname'];
             $_SESSION['email'] = $row['email'];
             $_SESSION['birthday'] = $row['birthday'];
-            if ($userType == 'thecustomer') 
+            if ($realUserType == 'thecustomer') 
             {
                 $_SESSION['id'] = $row['c_id'];
                 $_SESSION['type'] = "thecustomer";
                 header("location: ../customer");
-            } else if ($userType == 'employee') 
+            } else if ($realUserType == 'employee') 
             {
                 $_SESSION['id'] = $row['e_id'];
                 $_SESSION['type'] = "employee";
                 //header("location: ../dashboard/dashboardE.php");
                 header("location: ../employee/index.php");
-            } else if ($userType == 'tour_guide') 
+            } else if ($realUserType == 'tour_guide') 
             {
                 $_SESSION['id'] = $row['tg_id'];
                 $_SESSION['type'] = "tour_guide";
                 header("location: ../guide/");
             }
-            else if ($userType == 'admin')
+            else if ($realUserType == 'admin')
             {
                 // chnage this to the admin page
-                // header("location: ../employee/index.php");
+                $_SESSION['id'] = $row['e_id'];
+                header("location: ../admin/");
             }
         }
     }
