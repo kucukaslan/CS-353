@@ -93,9 +93,7 @@ if (isset($_POST['CancelBook']))
                     <form method="post" action="details.php">
                         <button class="btn btn-primary" type="submit" name="ResDetails">Details</button>
                         <input type="hidden" name="ts_id" value="<?php echo $row['ts_id']; ?>">
-                    </form>
-                    <?php echo $row['ts_id']; ?>
-                    
+                    </form>                 
                     <form action="createNewExtraActivity.php" method="post" id="form1">
                     <button class="btn btn-primary" type="submit" name="ResDetails">Add Activity</button>                    
                     <input type="hidden" name="ts_id" value="<?php echo $row['ts_id']; ?>">
