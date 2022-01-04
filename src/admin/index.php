@@ -19,17 +19,52 @@ if( ! isset($_SESSION['id']) && strcmp("admin", $_SESSION['type'] ?  $_SESSION['
 </head>
 <body>
 <?php
+    // the UI elements to take table length from user
+    echo "<div class='container'>";
+    echo "<h1>Administrative Reports</h1>";
+    echo "<form action='' method='post'>";
+    echo "<div class='form-group'>";
+    echo "<label for='table_length'>Table Length</label>";
+    echo "<input type='number' class='form-control' id='table_length' name='table_length' placeholder='Table Length' required>";
+    echo "</div>";
+    echo "<button type='submit' class='btn btn-primary'>Submit</button>";
+    echo "</form>";
+    echo "</div>";
+
+    
+    // get the table length from the user
+    // is the table length submitted?
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+    {
+      if (isset($_POST['table_length']))
+      {
+        $table_length = $_POST['table_length'];
+        $_SESSION['table_length'] = $table_length;
+        unset($_POST['table_length']);
+        header("refresh:0");
+      }
+    }
+    // if the table length is not submitted, use the default value
+    if(!isset($_SESSION['table_length'])) {
+        $_SESSION['table_length'] = 10;
+    }
+    $table_length = $_SESSION['table_length'];
+
+
+
+
+
     // print the first report table for approved
     // with columns sum_of_bills	employee_id	name	lastname	email	salary	position
     $sql = "CALL `sum_of_bill_endorsement`('approved');";
     $result = getDatabaseConnection()->query($sql); 
-    printSumOfBillEndorsementTable($result, " Approved");
+    printSumOfBillEndorsementTable($result, " Approved",$table_length);
 
     // print the second report table for rejected
     // with columns sum_of_bills	employee_id	name	lastname	email	salary	position
     $sql = "CALL `sum_of_bill_endorsement`('rejected')";
     $result = getDatabaseConnection()->query($sql);
-    printSumOfBillEndorsementTable($result, " Rejected");
+    printSumOfBillEndorsementTable($result, " Rejected",$table_length);
     
 
     // CALL `tour_participant_depart_city`(); 
@@ -37,7 +72,7 @@ if( ! isset($_SESSION['id']) && strcmp("admin", $_SESSION['type'] ?  $_SESSION['
 
     $sql = "CALL `tour_participant_depart_city`();";
     $result = getDatabaseConnection()->query($sql);
-    printTourParticipantDepartCityTable($result);
+    printTourParticipantDepartCityTable($result,$table_length);
 
     function printTourParticipantDepartCityTable($result, int $max = 25) {
         // print table with the columns city, number_of_participants_from_that_city, ts_id, t.place as `Tour Place`, t.type `Tour Name`, ts.start_date as `Tour Start Date`, ts.end_date as `Tour End Date`
