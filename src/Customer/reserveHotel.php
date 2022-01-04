@@ -72,10 +72,6 @@ if (isset($_POST['filterHotels'])) {
     {
         echo '<script>alert("Minimum Rating Cannot Be Less Than Maximum Rating")</script>';
     }
-    else if ($minRating < 1 || $maxRating < 1 || $maxRating > 5)
-    {
-        echo '<script>alert("Either maximum Rating or minimum Rating is out of range\n1- 1 <= Minimum Rating <= Maximum Rating\n2- Minimum Rating <= Maximum Rating <= 5")</script>';
-    }
     else
     {
         $string = "AND hotel.city LIKE '%$name%' AND hotel.rating BETWEEN $minRating AND $maxRating";
@@ -227,9 +223,6 @@ if (isset($_POST['CancelBook']))
         <label for="maxRating">Maximum Rating :</label>
         <input type="number" id="name" name="maxRating">
 
-        <!-- <button class="btn btn-primary" type="submit" name="filterHotelsByRating">Filter</button>
-        <button class="btn btn-warning" type="submit" name="clearFilterRating">Clear Filter</button> -->
-
         <label for="name">City :</label>
         <input type="text" id="name" name="name">
 
@@ -260,7 +253,7 @@ if (isset($_POST['CancelBook']))
                 <td> <?php echo $row['city'] ?> </td>
                 <td> <?php echo $row['address'] ?> </td>
                 <td> <?php echo $row['phone'] ?> </td>
-                <td> <?php echo $row['rating'] ?> </td>
+                <td> <?php echo $row['rating'] ?> Stars </td>
                 <td> <?php echo $row['roomC'] ?></td>
                 <form method="post" action="reserveHotel.php">
                     <td>
