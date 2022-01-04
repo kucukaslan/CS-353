@@ -41,8 +41,133 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $act = TourSectionActivity::getActivitiesOfTour($conn,$ts_id);
 
 
+        // is it post
+        if($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            if(isset($_POST['option']))
+            {
+                $option = $_POST['option'];
+                if($option == "cancel")
+                {
+                    $sql = "DELETE FROM guides WHERE ts_id = :ts_id and $tg_id = :tg_id and e_id = :e_id";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute(['ts_id' => $ts_id, 'tg_id' => $_POST['tg_id'], 'e_id' => $_SESSION['id']]);
+
+                }
+                else if($option == "offer")
+                {
+                    $sql = "INSERT INTO guides (ts_id, tg_id, e_id, status) VALUES (:ts_id, :tg_id, :e_id, 'pending') ON DUPLICATE KEY UPDATE status = 'pending'";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute(['ts_id' => $ts_id, 'tg_id' => $_POST['tg_id'], 'e_id' => $_SESSION['id']]);
+                }
+            }
+        }
+
         // print the tour details big
         $ts->printTourDetails();
+        $hasValidGuide = false;
+        // 
+        $t_guides = $ts->getTourGuide($conn, "approved");
+        if( count( $t_guides)>0 )
+        {
+             // tg_id, ts_id, status, reason, name, lastname, email, birthday, registration
+            echo '<h3>Tour Guides</h3>';
+            echo '<table class="table table-striped">';
+            echo '<thead>';
+            echo '<tr>';
+            echo '<th>Name</th>';
+            echo '<th>Last Name</th>';
+            echo '<th>Email</th>';
+            echo '<th>Birthday</th>';
+            echo '<th>Registration</th>';
+            echo '<th>Status</th>';
+            echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+            foreach($t_guides as $t_guide)
+            {
+                echo '<tr>';
+                echo '<td>'.$t_guide['name'].'</td>';
+                echo '<td>'.$t_guide['lastname'].'</td>';
+                echo '<td>'.$t_guide['email'].'</td>';
+                echo '<td>'.$t_guide['birthday'].'</td>';
+                echo '<td>'.$t_guide['registration'].'</td>';
+                echo '<td>'.$t_guide['status'].'</td>';
+                echo '</tr>';
+                if($t_guide['status'] == 'approved')
+                {
+                    $hasValidGuide = true;
+                }
+            }    
+            
+            echo '</tbody>';
+            echo '</table>';      
+        }
+        else {
+            $t_guides = $ts->getTourGuide($conn, "pending");
+            if(count( $t_guides)>0)
+            {
+                // tg_id, ts_id, status, reason, name, lastname, email, birthday, registration
+                echo '<h3>Pending Tour Guides</h3>';
+                echo '<table class="table table-striped">';
+                echo '<thead>';
+                echo '<tr>';
+                echo '<th>Name</th>';
+                echo '<th>Last Name</th>';
+                echo '<th>Email</th>';
+                echo '<th>Birthday</th>';
+                echo '<th>Registration</th>';
+                echo '<th>Status</th>';
+                echo '<th>Options</th>';
+                echo '</tr>';
+                echo '</thead>';
+                echo '<tbody>';
+                foreach($t_guides as $t_guide)
+                {
+                    echo '<tr>';
+                    echo '<td>'.$t_guide['name'].'</td>';
+                    echo '<td>'.$t_guide['lastname'].'</td>';
+                    echo '<td>'.$t_guide['email'].'</td>';
+                    echo '<td>'.$t_guide['birthday'].'</td>';
+                    echo '<td>'.$t_guide['registration'].'</td>';
+                    echo '<td>'.$t_guide['status'].'</td>';
+                    echo '<td>';
+                    echo '<form action="" method="post">';
+                    echo '<input type="hidden" name="option" value="cancel">';
+                    echo '<input type="hidden" name="tg_id" value="'.$t_guide['tg_id'].'">';
+                    echo '<input type="hidden" name="ts_id" value="'.$ts_id.'">';
+                    echo '<input type="submit" name="option" value="Cancel" class="btn btn-success">';
+                    echo '</form>';
+                    echo '</td>';
+                    echo '</tr>';
+                }   
+                echo '</tbody>';
+                echo '</table>';      
+            }
+            else {
+                // drop down menu to choose a guide and offer
+                // get all guides
+                $sql = "SELECT * FROM tour_guide";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $t_guides = $stmt->fetchAll();
+                if($t_guides > 0)
+                {
+                    echo '<h3>Offer a Tour Guide</h3>';
+                    echo '<form action="" method="post">';
+                    echo '<select name="tg_id">';
+                    foreach($t_guides as $t_guide)
+                    {
+                        echo '<option value="'.$t_guide['tg_id'].'">'.$t_guide['name'].' '.$t_guide['lastname'].'</option>';
+                    }
+                    echo '</select>';
+                    echo '<input type="hidden" name="ts_id" value="'.$ts_id.'">';
+                    echo '<input type="submit" name="option" value="offer" class="btn btn-success">';
+                    echo '</form>';
+                }
+                
+            }
+        }
 
         // print the activities as a list
         echo "<h2>Activities</h2>";
@@ -86,6 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         echo "</tbody>";
         echo "</table>";
+    
 
         // print the extra activities as a table
         echo "<h3>Extra Activities</h3>";

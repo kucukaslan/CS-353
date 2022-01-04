@@ -174,4 +174,14 @@ class TourSection
         }
         return $stmt->fetchAll();            
     }
+
+    public function getTourGuide(PDO $pdo, $status = "approved") : ?array {
+        // get the tour guide offerings for this tour section
+        // array of arrays with the following keys:
+        // tg_id, ts_id, status, reason, name, lastname, email, birthday, registration
+        $sql = "SELECT * FROM tour_guide natural join guides g WHERE ts_id = :ts_id and status = :status";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([":ts_id" => $this->getTsId(), ":status" => $status]);
+        return $stmt->fetchAll();
+    }
 }
